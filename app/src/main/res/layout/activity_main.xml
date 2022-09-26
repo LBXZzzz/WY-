@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/Grey"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/main_too_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:textSize="20sp"
+        app:navigationIcon="@drawable/ic_search">
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:maxLines="1"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"
+            android:drawableStart="@drawable/ic_search"
+            android:text="   WY音乐"
+            android:background="@drawable/edittext_ellipse_shape"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_paper_main"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp"/>
+    <include layout="@layout/navigation_bar"/>
+
+</LinearLayout>

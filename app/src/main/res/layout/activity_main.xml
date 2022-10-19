@@ -12,24 +12,31 @@
         android:background="@color/white"
         android:orientation="horizontal"
         android:textSize="20sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:navigationIcon="@drawable/ic_search">
-        <EditText
+        <!--<EditText
             android:layout_width="250dp"
             android:layout_height="35dp"
+            android:id="@+id/main_et"
             android:maxLines="1"
             android:paddingLeft="10dp"
             android:singleLine="true"
             android:imeOptions="actionSearch"
             android:drawableStart="@drawable/ic_search"
             android:text="   WY音乐"
-            android:background="@drawable/edittext_ellipse_shape"/>
+            android:background="@drawable/edittext_ellipse_shape"/>-->
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.viewpager2.widget.ViewPager2
+    <!--<androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_paper_main"
         android:layout_width="match_parent"
         android:layout_weight="1"
         android:layout_height="0dp"/>
-    <include layout="@layout/navigation_bar"/>
-
+    <include layout="@layout/navigation_bar"/>-->
+    <Button
+        android:id="@+id/getAppDataBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get App Data" />
 </LinearLayout>

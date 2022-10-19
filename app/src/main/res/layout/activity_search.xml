@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.SearchActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/search_too_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/main_et"
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:background="@drawable/edittext_ellipse_shape"
+            android:drawableStart="@drawable/ic_search"
+            android:imeOptions="actionSearch"
+            android:maxLines="1"
+            android:paddingStart="10dp"
+            android:paddingEnd="20dp"
+            android:singleLine="true" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="20dp"
+            android:text="搜索"
+            android:textSize="25sp" />
+    </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:id="@+id/history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="18dp"
+        android:text="历史搜索"
+        android:textColor="@color/big_red"
+        app:layout_constraintTop_toBottomOf="@+id/search_too_bar" />
+
+    <com.example.topviewap.widget.WaterFlowLayout
+        android:id="@+id/wf_search"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/history" />
+
+    <LinearLayout
+        android:id="@+id/lly_search_recyclerview"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/linearlayout_ellipse"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wf_search">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="18dp"
+            android:text="单曲"
+            android:textColor="@color/big_red"
+            android:textSize="16sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_search_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="10dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,9 +14,9 @@ object HotSearchData {
     //ServiceCreator创建了一个接口的动态代理对象
     private val hotSearchDataService = ServiceCreator.create<HotSearchDataService>()
 
-    //调用此方法进行搜索
+    //调用此方法获取搜索热词
     suspend fun hotSearchData() = hotSearchDataService.getHotSearchData()
 
-
-
+    //调用此方法进行搜索
+    suspend fun searchData(key:String,offset:Int) = hotSearchDataService.getSearchData(key,offset)
 }

@@ -1,6 +1,6 @@
 package com.example.topviewap.entries
 
-data class SearchResult(
+data class HotData(
     val code: Int,
     val `data`: List<Data>,
     val message: String

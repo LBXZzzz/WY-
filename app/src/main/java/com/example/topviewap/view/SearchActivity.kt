@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import kotlinx.coroutines.flow.collect
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -16,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.*
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.topviewap.R
@@ -24,6 +27,8 @@ import com.example.topviewap.entries.Data
 import com.example.topviewap.entries.Song
 import com.example.topviewap.examples.Repository
 import com.example.topviewap.widget.WaterFlowLayout
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 
 class SearchActivity : AppCompatActivity() {
@@ -64,7 +69,6 @@ class SearchActivity : AppCompatActivity() {
             val data = result.getOrNull()
             if (data != null) {
                 viewModel.dataList.addAll(data)
-                initRecyclerView()
             }
         })
 
@@ -98,12 +102,19 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun initRecyclerView() {
+    private fun initRecyclerView(key: String) {
         //对recyclerView做一些初始化操作
         val layoutManager = LinearLayoutManager(this)
         mRecyclerView.layoutManager = layoutManager
         val adapter = HotDataRecyclerView(viewModel.dataList,applicationContext)
         mRecyclerView.adapter = adapter
+        //这个函数是触发Paging 3分页功能的核心，调用这个函数之后，Paging 3就开始工作了
+        //collect()函数是一个挂起函数，只有在协程作用域中才能调用它
+        lifecycleScope.launch {
+            viewModel.getPagingData(key).collect{ pagingData ->
+                adapter.submitData(pagingData)
+            }
+        }
     }
 
     private fun initWaterFlowLayout() {
@@ -138,6 +149,7 @@ class SearchActivity : AppCompatActivity() {
             mScrollView.visibility = View.GONE
             mLlySong.visibility = View.VISIBLE
             viewModel.search(key)
+            initRecyclerView(key)
             //点击回车后自动收起键盘
             val manager =
                 applicationContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -188,6 +200,10 @@ class SearchActivity : AppCompatActivity() {
 
         fun search(key: String) {
             searchData.value = key
+        }
+
+        fun getPagingData(key: String): Flow<PagingData<Song>> {
+            return Repository.getPagingData(key).cachedIn(viewModelScope)
         }
 
     }

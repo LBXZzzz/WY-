@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mToolbar: Toolbar
 
 
-
     lateinit var bt: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {

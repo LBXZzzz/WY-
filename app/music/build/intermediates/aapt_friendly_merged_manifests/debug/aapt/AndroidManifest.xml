@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.mylibrary" >
+
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="32" />
+
+    <application>
+        <service
+            android:name="com.example.mylibrary.MusicService"
+            android:enabled="true"
+            android:exported="true" />
+    </application>
+
+</manifest>

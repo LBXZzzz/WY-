@@ -1,5 +1,6 @@
 package com.example.topviewap.view
 
+
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.widget.Button
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.example.music.MusicActivity
 import com.example.topviewap.R
 import com.example.topviewap.viewmodel.MainViewModel
 
@@ -48,10 +50,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.backup -> {
-                val intent = Intent(this, SearchActivity::class.java)
+                val intent = Intent(this, MusicActivity::class.java)
                 startActivity(intent)
             }
         }
         return true
     }
+
+
 }

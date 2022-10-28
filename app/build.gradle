@@ -54,4 +54,5 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'androidx.paging:paging-runtime:3.0.0-beta01'
+    implementation project(":music")
 }

@@ -4,27 +4,32 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
-import com.example.music.IMusic
-
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.example.music.MusicService
-import com.example.music.R
 
 class MusicActivity : AppCompatActivity() {
 
     private var TAG = "MusicActivity"
-    private lateinit var musicManager: IMusic
+    private lateinit var musicManager: IMusic//可以调用服务里面播放音乐的功能
+
+    private lateinit var mToolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
         attemptToBindService()
-
+        init()
     }
 
+    private fun init() {
+        mToolbar = findViewById(R.id.too_bar_service)
+        mToolbar.setNavigationOnClickListener { view: View? -> finish() }
+    }
 
     //下面代码将服务与客户端绑定
     private val mConnection = object : ServiceConnection {

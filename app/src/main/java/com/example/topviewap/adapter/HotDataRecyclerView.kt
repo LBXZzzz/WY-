@@ -30,6 +30,12 @@ class HotDataRecyclerView(private val dataList: List<Song>, private val context:
         }
     }
 
+    //recyclerview的点击事件的接口
+    interface OnItemClickListener {
+        fun onItemClick(view: View?, position: Int)
+    }
+
+    var mOnItemClickListener: OnItemClickListener? = null
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val songName: TextView = view.findViewById(R.id.tv_song_name)
@@ -56,7 +62,10 @@ class HotDataRecyclerView(private val dataList: List<Song>, private val context:
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.picView);
         }
-
+        holder.itemView.setOnClickListener { v: View? ->
+            val position1 = holder.layoutPosition
+            mOnItemClickListener!!.onItemClick(holder.itemView, position1)
+        }
     }
 
 }

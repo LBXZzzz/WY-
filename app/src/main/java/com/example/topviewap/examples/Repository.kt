@@ -43,7 +43,6 @@ object Repository {
             val searchData = HotSearchData.searchData(key, offset)
             if (HotSearchData.searchData(key, offset).code == 200) {
                 val searchDataList = searchData.result.songs
-                Log.d("zwyuu", searchDataList.toString())
                 //使用Kotlin内置的Result.success()方法来包装获取的数据列表
                 Result.success(searchDataList)
             } else {

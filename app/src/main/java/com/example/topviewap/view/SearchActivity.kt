@@ -1,7 +1,7 @@
 package com.example.topviewap.view
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -104,9 +104,8 @@ class SearchActivity : AppCompatActivity() {
         val adapter = HotDataRecyclerView(viewModel.dataList, applicationContext)
         adapter.mOnItemClickListener = object : HotDataRecyclerView.OnItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
-                Log.d("zwy", position.toString())
-                Log.d("zwy", viewModel.dataList[position].name)
-                Log.d("zwy", viewModel.dataList.toString())
+                val intent=Intent(this@SearchActivity,MusicActivity::class.java)
+                startActivity(intent)
             }
         }
         mRecyclerView.adapter = adapter

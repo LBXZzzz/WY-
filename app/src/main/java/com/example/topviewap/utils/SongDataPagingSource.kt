@@ -15,6 +15,9 @@ import com.example.topviewap.network.HotSearchData
 class SongDataPagingSource(private val key: String) : PagingSource<Int, Song>() {
     override fun getRefreshKey(state: PagingState<Int, Song>): Int? = null
 
+    companion object{
+        val songList= mutableListOf<Song>()
+    }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Song> {
         return try {
@@ -22,6 +25,7 @@ class SongDataPagingSource(private val key: String) : PagingSource<Int, Song>() 
             val pageSize = page * 30
             val searchData = HotSearchData.searchData(key, pageSize)
             val item = searchData.result.songs
+            songList.addAll(item)
             val prevKey = if (page > 1) page - 1 else null
             val nextKey = if (item.isNotEmpty()) page + 1 else null
             LoadResult.Page(item, prevKey, nextKey)

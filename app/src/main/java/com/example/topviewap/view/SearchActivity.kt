@@ -20,6 +20,7 @@ import com.example.topviewap.adapter.HotDataRecyclerView
 import com.example.topviewap.entries.Data
 import com.example.topviewap.entries.Song
 import com.example.topviewap.examples.Repository
+import com.example.topviewap.utils.SongDataPagingSource
 import com.example.topviewap.widget.WaterFlowLayout
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -104,7 +105,9 @@ class SearchActivity : AppCompatActivity() {
         val adapter = HotDataRecyclerView(viewModel.dataList, applicationContext)
         adapter.mOnItemClickListener = object : HotDataRecyclerView.OnItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
-                val intent=Intent(this@SearchActivity,MusicActivity::class.java)
+                val intent=Intent(this@SearchActivity,MusicActivity::class.java).apply {
+                    putExtra("pet",SongDataPagingSource.songList[position])
+                }
                 startActivity(intent)
             }
         }

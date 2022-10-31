@@ -105,8 +105,8 @@ class SearchActivity : AppCompatActivity() {
         val adapter = HotDataRecyclerView(viewModel.dataList, applicationContext)
         adapter.mOnItemClickListener = object : HotDataRecyclerView.OnItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
-                val intent=Intent(this@SearchActivity,MusicActivity::class.java).apply {
-                    putExtra("pet",SongDataPagingSource.songList[position])
+                val intent = Intent(this@SearchActivity, MusicActivity::class.java).apply {
+                    putExtra("song", SongDataPagingSource.songList[position])
                 }
                 startActivity(intent)
             }
@@ -187,8 +187,6 @@ class SearchActivity : AppCompatActivity() {
 
         //搜索数据
         val dataList = mutableListOf<Song>()
-
-        val dataList1 = mutableListOf<PagingData<Song>>()
 
         //使用Transformations的switchMap()方法来观察这个对象，否则仓库层返回的LiveData对象将无法进行观察
         val hotSearchLiveData = Transformations.switchMap(hotSearchData) {

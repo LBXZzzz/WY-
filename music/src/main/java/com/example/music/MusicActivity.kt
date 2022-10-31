@@ -36,7 +36,6 @@ class MusicActivity : AppCompatActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             Log.e(TAG, "service connected")
             musicManager = IMusic.Stub.asInterface(service)
-            musicManager.startMusic()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {

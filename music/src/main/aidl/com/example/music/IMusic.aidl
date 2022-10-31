@@ -9,7 +9,7 @@ interface IMusic {
      * and return values in AIDL.
      */
         //开始播放音乐
-        void startMusic();
+        void startMusic(String url);
 
         //暂停音乐
         void stopMusic();

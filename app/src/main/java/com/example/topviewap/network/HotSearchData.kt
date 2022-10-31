@@ -18,5 +18,9 @@ object HotSearchData {
     suspend fun hotSearchData() = hotSearchDataService.getHotSearchData()
 
     //调用此方法进行搜索
-    suspend fun searchData(key:String,offset:Int) = hotSearchDataService.getSearchData(key,offset)
+    suspend fun searchData(key: String, offset: Int) =
+        hotSearchDataService.getSearchData(key, offset)
+
+    //调用此方法可以通过歌曲id获取歌曲Url
+    suspend fun songUrl(id: String) = hotSearchDataService.getSongUrl(id)
 }

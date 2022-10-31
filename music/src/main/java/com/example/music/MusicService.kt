@@ -15,9 +15,8 @@ class MusicService : Service() {
     }
 
     private val musicBinder = object : IMusic.Stub() {
-        override fun startMusic() {
-            val songUrl = "https://music.163.com/song/media/outer/url?id=1982706733.mp3"
-            mMediaPlayer.setDataSource(songUrl)
+        override fun startMusic(url: String?) {
+            mMediaPlayer.setDataSource(url)
             mMediaPlayer.prepareAsync()
             mMediaPlayer.setOnPreparedListener(OnPreparedListener { mp: MediaPlayer? ->
                 isPlayer = true
@@ -25,8 +24,11 @@ class MusicService : Service() {
             })
         }
 
+
         override fun stopMusic() {
-            TODO("Not yet implemented")
+            if (isPlayer) {
+                mMediaPlayer.pause()
+            }
         }
 
         override fun nextSong() {

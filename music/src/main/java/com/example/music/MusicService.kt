@@ -11,22 +11,27 @@ class MusicService : Service() {
     private val mMediaPlayer = MediaPlayer()
 
     companion object {
-        var isPlayer = false//歌曲是否在播放
+        var isPlayPre = false//判断歌曲是否准备过
     }
 
     private val musicBinder = object : IMusic.Stub() {
         override fun startMusic(url: String?) {
-            mMediaPlayer.setDataSource(url)
-            mMediaPlayer.prepareAsync()
-            mMediaPlayer.setOnPreparedListener(OnPreparedListener { mp: MediaPlayer? ->
-                isPlayer = true
+            if (!isPlayPre) {
+                mMediaPlayer.setDataSource(url)
+                mMediaPlayer.prepareAsync()
+                mMediaPlayer.setOnPreparedListener(OnPreparedListener { mp: MediaPlayer? ->
+                    mMediaPlayer.start()
+                    isPlayPre = true
+                })
+            } else {
                 mMediaPlayer.start()
-            })
+            }
+
         }
 
 
         override fun stopMusic() {
-            if (isPlayer) {
+            if (mMediaPlayer.isPlaying) {
                 mMediaPlayer.pause()
             }
         }

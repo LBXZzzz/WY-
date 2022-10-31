@@ -4,22 +4,17 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.example.music.IMusic
 import com.example.music.MusicService
 import com.example.topviewap.R
-import com.example.topviewap.entries.Data
 import com.example.topviewap.entries.Song
 import com.example.topviewap.entries.SongData
 import com.example.topviewap.examples.Repository
@@ -32,9 +27,11 @@ class MusicActivity : AppCompatActivity() {
     private lateinit var songList: Song
 
     private lateinit var mToolbar: Toolbar
-    private lateinit var mIvSong: ImageView
+    private lateinit var mIvSong: ImageView//专辑封面的图片
+    private lateinit var mIvPlay: ImageView//播放暂停按钮
 
     private var isBinder = false//用来判断服务是否已经绑定，绑定则为true
+    private var isPlay = false//用来判断歌曲是否在播放
 
     private val viewModel by lazy { ViewModelProvider(this).get(MusicViewModal::class.java) }
 
@@ -46,6 +43,7 @@ class MusicActivity : AppCompatActivity() {
         attemptToBindService()
         init()
         initLayout()
+        initFunction()
         viewModel.searchSongUrl(songList.id.toString())
         viewModel.hotSearchLiveData.observe(this, Observer { result ->
             val data = result.getOrNull()
@@ -62,6 +60,7 @@ class MusicActivity : AppCompatActivity() {
     private fun init() {
         mToolbar = findViewById(R.id.too_bar_service)
         mIvSong = findViewById(R.id.iv_music_photo_service)
+        mIvPlay = findViewById(R.id.iv_music_play_service)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
     }
 
@@ -70,6 +69,23 @@ class MusicActivity : AppCompatActivity() {
             .load(songList.al.picUrl)
             .resize(150, 150)
             .into(mIvSong)
+    }
+
+    //用来初始化音乐播放界面的按钮功能
+    private fun initFunction() {
+        isPlay = true
+        mIvPlay.isSelected = isPlay
+        mIvPlay.setOnClickListener(View.OnClickListener { v: View? ->
+            if (isPlay) {
+                mIvPlay.isSelected = false
+                musicManager.stopMusic()
+                isPlay = false
+            } else {
+                mIvPlay.isSelected = true
+                musicManager.startMusic("")
+                isPlay = true
+            }
+        })
     }
 
     //下面代码将服务与客户端绑定

@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.*
@@ -24,14 +25,18 @@ class MusicActivity : AppCompatActivity() {
     private var TAG = "MusicActivity"
     private lateinit var musicManager: IMusic//可以调用服务里面播放音乐的功能
 
-    private lateinit var songList: Song
+    private lateinit var song: Song
+    private var songList= ArrayList<Song>()
+    private var number=0
 
     private lateinit var mToolbar: Toolbar
     private lateinit var mIvSong: ImageView//专辑封面的图片
     private lateinit var mIvPlay: ImageView//播放暂停按钮
+    private lateinit var mIvPlayMode: ImageView//选择音乐播放模式的按钮
 
     private var isBinder = false//用来判断服务是否已经绑定，绑定则为true
     private var isPlay = false//用来判断歌曲是否在播放
+    private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放。2为单曲循环，3为随机播放
 
     private val viewModel by lazy { ViewModelProvider(this).get(MusicViewModal::class.java) }
 
@@ -39,12 +44,14 @@ class MusicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
 
-        songList = intent.getSerializableExtra("song") as Song
+        song = intent.getSerializableExtra("song") as Song
+        songList.add(song)
+        number++
         attemptToBindService()
         init()
         initLayout()
         initFunction()
-        viewModel.searchSongUrl(songList.id.toString())
+        viewModel.searchSongUrl(songList[number].id.toString())
         viewModel.hotSearchLiveData.observe(this, Observer { result ->
             val data = result.getOrNull()
             if (data != null) {
@@ -61,12 +68,13 @@ class MusicActivity : AppCompatActivity() {
         mToolbar = findViewById(R.id.too_bar_service)
         mIvSong = findViewById(R.id.iv_music_photo_service)
         mIvPlay = findViewById(R.id.iv_music_play_service)
+        mIvPlayMode = findViewById(R.id.iv_play_mode_service)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
     }
 
     private fun initLayout() {
         Picasso.with(this)
-            .load(songList.al.picUrl)
+            .load(song.al.picUrl)
             .resize(150, 150)
             .into(mIvSong)
     }
@@ -85,6 +93,26 @@ class MusicActivity : AppCompatActivity() {
                 musicManager.startMusic("")
                 isPlay = true
             }
+        })
+        mIvPlayMode.setOnClickListener(View.OnClickListener { v: View? ->
+            when (PLAY_MODE) {
+                1 -> {
+                    PLAY_MODE = 2
+                    mIvPlayMode.setImageResource(R.drawable.ic_list_play)
+                    Toast.makeText(applicationContext, "列表播放", Toast.LENGTH_SHORT).show()
+                }
+                2 -> {
+                    PLAY_MODE = 3
+                    mIvPlayMode.setImageResource(R.drawable.ic_loop_playback)
+                    Toast.makeText(applicationContext, "单曲循环", Toast.LENGTH_SHORT).show()
+                }
+                3 -> {
+                    PLAY_MODE = 1
+                    mIvPlayMode.setImageResource(R.drawable.ic_random_play)
+                    Toast.makeText(applicationContext, "随机播放", Toast.LENGTH_SHORT).show()
+                }
+            }
+
         })
     }
 

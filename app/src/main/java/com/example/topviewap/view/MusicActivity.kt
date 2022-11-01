@@ -1,5 +1,9 @@
 package com.example.topviewap.view
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -8,6 +12,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -30,9 +35,10 @@ class MusicActivity : AppCompatActivity() {
     private var number=0
 
     private lateinit var mToolbar: Toolbar
-    private lateinit var mIvSong: ImageView//专辑封面的图片
+    private lateinit var mIvSongPhoto: ImageView//专辑封面的图片
     private lateinit var mIvPlay: ImageView//播放暂停按钮
     private lateinit var mIvPlayMode: ImageView//选择音乐播放模式的按钮
+    private var rotationAnim: ObjectAnimator? = null
 
     private var isBinder = false//用来判断服务是否已经绑定，绑定则为true
     private var isPlay = false//用来判断歌曲是否在播放
@@ -46,12 +52,13 @@ class MusicActivity : AppCompatActivity() {
 
         song = intent.getSerializableExtra("song") as Song
         songList.add(song)
-        number++
         attemptToBindService()
         init()
         initLayout()
         initFunction()
+        initAnim()
         viewModel.searchSongUrl(songList[number].id.toString())
+        number++
         viewModel.hotSearchLiveData.observe(this, Observer { result ->
             val data = result.getOrNull()
             if (data != null) {
@@ -66,7 +73,7 @@ class MusicActivity : AppCompatActivity() {
 
     private fun init() {
         mToolbar = findViewById(R.id.too_bar_service)
-        mIvSong = findViewById(R.id.iv_music_photo_service)
+        mIvSongPhoto = findViewById(R.id.iv_music_photo_service)
         mIvPlay = findViewById(R.id.iv_music_play_service)
         mIvPlayMode = findViewById(R.id.iv_play_mode_service)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
@@ -76,7 +83,7 @@ class MusicActivity : AppCompatActivity() {
         Picasso.with(this)
             .load(song.al.picUrl)
             .resize(150, 150)
-            .into(mIvSong)
+            .into(mIvSongPhoto)
     }
 
     //用来初始化音乐播放界面的按钮功能
@@ -86,10 +93,12 @@ class MusicActivity : AppCompatActivity() {
         mIvPlay.setOnClickListener(View.OnClickListener { v: View? ->
             if (isPlay) {
                 mIvPlay.isSelected = false
+                rotationAnim?.pause()
                 musicManager.stopMusic()
                 isPlay = false
             } else {
                 mIvPlay.isSelected = true
+                rotationAnim?.resume()
                 musicManager.startMusic("")
                 isPlay = true
             }
@@ -115,6 +124,35 @@ class MusicActivity : AppCompatActivity() {
 
         })
     }
+
+    private fun initAnim() {
+        rotationAnim = ObjectAnimator.ofFloat(mIvSongPhoto, "rotation", 0f, 359f)
+        if(rotationAnim!=null){
+            rotationAnim?.setDuration((20 * 1000).toLong())
+            Log.d("zwyo","ddddddddxcxdd")
+            /*rotationAnim?.setInterpolator(LinearInterpolator())
+            rotationAnim?.setRepeatCount(-1)
+            rotationAnim?.setRepeatMode(ValueAnimator.RESTART)*/
+            /*rotationAnim?.addUpdateListener(ValueAnimator.AnimatorUpdateListener { animation -> //更新歌曲封面旋转度同步
+                mIvPlay.setRotation(animation.animatedValue as Float)
+            })*/
+            rotationAnim?.start()
+            rotationAnim?.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
+                    super.onAnimationEnd(animation, isReverse)
+                    rotationAnim?.start()
+                }
+            })
+        }else{
+            Log.d("zwyo","dddd")
+        }
+        /*if (MusicPlay.isPlaying()) {
+            rotationAnim.pause()
+            rotationAnim.start()
+        }*/
+    }
+
+
 
     //下面代码将服务与客户端绑定
     private val mConnection = object : ServiceConnection {

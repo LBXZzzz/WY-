@@ -37,6 +37,8 @@
             android:textSize="20sp" />
     </androidx.appcompat.widget.Toolbar>
 
+
+
     <ProgressBar
         android:id="@+id/pb_search"
         android:layout_width="match_parent"
@@ -48,51 +50,52 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/search_too_bar">
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <TextView
+                android:id="@+id/history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
+                android:text="历史搜索"
+                android:textColor="@color/big_red"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.example.topviewap.widget.WaterFlowLayout
+                android:id="@+id/wf_search"
+                android:layout_width="330dp"
+                android:layout_height="70dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/history" />
+
+            <LinearLayout
+                android:id="@+id/lly_hot"
+                android:layout_width="330dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/linearlayout_ellipse"
+                android:orientation="vertical"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/wf_search">
+
                 <TextView
-                    android:id="@+id/history"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="18dp"
-                    android:text="历史搜索"
+                    android:text="热搜榜单"
                     android:textColor="@color/big_red"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.example.topviewap.widget.WaterFlowLayout
-                    android:id="@+id/wf_search"
-                    android:layout_width="330dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/history" />
-
-                <LinearLayout
-                    android:id="@+id/lly_hot"
-                    android:layout_width="330dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/linearlayout_ellipse"
-                    android:orientation="vertical"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/wf_search">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="20dp"
-                        android:layout_marginTop="18dp"
-                        android:text="热搜榜单"
-                        android:textColor="@color/big_red"
-                        android:textSize="16sp" />
-                </LinearLayout>
+                    android:textSize="16sp" />
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

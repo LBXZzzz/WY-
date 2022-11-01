@@ -14,4 +14,6 @@
     <color name="text_Grey">#c1c1c2</color>
     <color name="colorWhite">#ffffff</color>
     <color name="Grey">#F0EDED</color>
+    <color name="widget_album_ring_color1">#F0EDEA</color>
+
 </resources>

@@ -9,7 +9,6 @@ import android.os.IBinder
 class MusicService : Service() {
 
 
-
     companion object {
         var isPlayPre = false//判断歌曲是否准备过
         val mMediaPlayer = MediaPlayer()
@@ -41,8 +40,13 @@ class MusicService : Service() {
             TODO("Not yet implemented")
         }
 
+
         override fun preSong() {
             TODO("Not yet implemented")
+        }
+
+        override fun seekTo(time: Int) {
+            mMediaPlayer.seekTo(time)
         }
 
     }

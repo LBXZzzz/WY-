@@ -19,4 +19,7 @@ interface IMusic {
 
         //上一首播放
         void preSong();
+
+        //拖动进度条
+        void seekTo(int time);
 }

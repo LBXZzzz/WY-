@@ -30,8 +30,6 @@ class MusicActivity : AppCompatActivity() {
     private lateinit var musicManager: IMusic//可以调用服务里面播放音乐的功能
 
     private lateinit var song: Song
-    private var songList = ArrayList<Song>()
-    private var number = 0
 
     private lateinit var mToolbar: Toolbar
     private lateinit var mIvSongPhoto: ImageView//专辑封面的图片
@@ -45,6 +43,10 @@ class MusicActivity : AppCompatActivity() {
     private var isPlay = false//用来判断歌曲是否在播放
     private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放。2为单曲循环，3为随机播放
 
+    companion object {
+        private var number = 0//现在在放第几首歌
+        private var songList = ArrayList<Song>()
+    }
 
     private val viewModel by lazy { ViewModelProvider(this).get(MusicViewModal::class.java) }
 
@@ -52,7 +54,6 @@ class MusicActivity : AppCompatActivity() {
         override fun run() {
             while (true) {
                 while (isPlay) {
-                    Log.d("zwyo", "zwyuuu")
                     mSeekBar.max = MusicService.mMediaPlayer.duration
                     mSeekBar.progress = (MusicService.mMediaPlayer.currentPosition)
                     try {
@@ -69,7 +70,6 @@ class MusicActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
-
         song = intent.getSerializableExtra("song") as Song
         songList.add(song)
         attemptToBindService()
@@ -143,6 +143,24 @@ class MusicActivity : AppCompatActivity() {
                 }
             }
 
+        })
+        mSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            var progressNow = 0
+
+            //拖动条进度改变的时候调用
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                progressNow = progress
+            }
+
+            //拖动条开始拖动的时候调用
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                //TODO("Not yet implemented")
+            }
+
+            //拖动条停止拖动的时候调用
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                musicManager.seekTo(progressNow)
+            }
         })
     }
 

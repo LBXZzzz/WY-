@@ -8,10 +8,11 @@ import android.os.IBinder
 
 class MusicService : Service() {
 
-    private val mMediaPlayer = MediaPlayer()
+
 
     companion object {
         var isPlayPre = false//判断歌曲是否准备过
+        val mMediaPlayer = MediaPlayer()
     }
 
     private val musicBinder = object : IMusic.Stub() {

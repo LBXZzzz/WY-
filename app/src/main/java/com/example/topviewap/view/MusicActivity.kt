@@ -3,7 +3,6 @@ package com.example.topviewap.view
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -12,8 +11,8 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import android.view.View
-import android.view.animation.LinearInterpolator
 import android.widget.ImageView
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -31,20 +30,41 @@ class MusicActivity : AppCompatActivity() {
     private lateinit var musicManager: IMusic//可以调用服务里面播放音乐的功能
 
     private lateinit var song: Song
-    private var songList= ArrayList<Song>()
-    private var number=0
+    private var songList = ArrayList<Song>()
+    private var number = 0
 
     private lateinit var mToolbar: Toolbar
     private lateinit var mIvSongPhoto: ImageView//专辑封面的图片
     private lateinit var mIvPlay: ImageView//播放暂停按钮
     private lateinit var mIvPlayMode: ImageView//选择音乐播放模式的按钮
-    private var rotationAnim: ObjectAnimator? = null
+    private lateinit var mSeekBar: SeekBar
+
+    private var rotationAnim: ObjectAnimator? = null//封面旋转的动画属性
 
     private var isBinder = false//用来判断服务是否已经绑定，绑定则为true
     private var isPlay = false//用来判断歌曲是否在播放
     private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放。2为单曲循环，3为随机播放
+    private val isSeekbar = false//用来判断进度条是否要行动
 
     private val viewModel by lazy { ViewModelProvider(this).get(MusicViewModal::class.java) }
+
+    val thread = object : Thread() {
+        override fun run() {
+            while (true) {
+                while (isPlay) {
+                    Log.d("zwyo", "zwyuuu")
+                    mSeekBar.max = MusicService.mMediaPlayer.duration
+                    mSeekBar.progress = (MusicService.mMediaPlayer.currentPosition)
+                    try {
+                        // 每70毫秒更新一次位置
+                        sleep(70);
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +96,7 @@ class MusicActivity : AppCompatActivity() {
         mIvSongPhoto = findViewById(R.id.iv_music_photo_service)
         mIvPlay = findViewById(R.id.iv_music_play_service)
         mIvPlayMode = findViewById(R.id.iv_play_mode_service)
+        mSeekBar = findViewById(R.id.seekbar_service)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
     }
 
@@ -127,9 +148,8 @@ class MusicActivity : AppCompatActivity() {
 
     private fun initAnim() {
         rotationAnim = ObjectAnimator.ofFloat(mIvSongPhoto, "rotation", 0f, 359f)
-        if(rotationAnim!=null){
-            rotationAnim?.setDuration((20 * 1000).toLong())
-            Log.d("zwyo","ddddddddxcxdd")
+        if (rotationAnim != null) {
+            rotationAnim?.duration = (20 * 1000)
             /*rotationAnim?.setInterpolator(LinearInterpolator())
             rotationAnim?.setRepeatCount(-1)
             rotationAnim?.setRepeatMode(ValueAnimator.RESTART)*/
@@ -143,15 +163,8 @@ class MusicActivity : AppCompatActivity() {
                     rotationAnim?.start()
                 }
             })
-        }else{
-            Log.d("zwyo","dddd")
         }
-        /*if (MusicPlay.isPlaying()) {
-            rotationAnim.pause()
-            rotationAnim.start()
-        }*/
     }
-
 
 
     //下面代码将服务与客户端绑定
@@ -160,8 +173,7 @@ class MusicActivity : AppCompatActivity() {
             Log.e(TAG, "service connected")
             musicManager = IMusic.Stub.asInterface(service)
             isBinder = true
-            //val songId=viewModel.hotDataList[0].url
-            //musicManager.startMusic(songId)
+            thread.start()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -179,6 +191,7 @@ class MusicActivity : AppCompatActivity() {
         //取消与服务的注册
         super.onStop()
     }
+
 
     class MusicViewModal : ViewModel() {
         private val songData = MutableLiveData<String>()

@@ -95,6 +95,14 @@ class SearchActivity : AppCompatActivity() {
             bt.setPadding(50, 0, 0, 0)
             bt.setBackgroundColor(resources.getColor(R.color.white))
             mLlyHot.addView(bt)
+            bt.setOnClickListener(View.OnClickListener {
+                val key = bt.text.toString()
+                mLlyHot.visibility = View.GONE
+                mScrollView.visibility = View.GONE
+                mLlySong.visibility = View.VISIBLE
+                viewModel.search(key)
+                initRecyclerView(key)
+            })
         }
     }
 

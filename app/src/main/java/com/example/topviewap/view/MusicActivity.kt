@@ -44,7 +44,7 @@ class MusicActivity : AppCompatActivity() {
     private var isBinder = false//用来判断服务是否已经绑定，绑定则为true
     private var isPlay = false//用来判断歌曲是否在播放
     private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放。2为单曲循环，3为随机播放
-    private val isSeekbar = false//用来判断进度条是否要行动
+
 
     private val viewModel by lazy { ViewModelProvider(this).get(MusicViewModal::class.java) }
 

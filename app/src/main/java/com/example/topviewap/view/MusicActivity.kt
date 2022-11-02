@@ -41,7 +41,9 @@ class MusicActivity : AppCompatActivity() {
 
     private var isBinder = false//用来判断服务是否已经绑定，绑定则为true
     private var isPlay = false//用来判断歌曲是否在播放
+    private var isDrag=false//用来判断进度条是否在拖动
     private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放。2为单曲循环，3为随机播放
+
 
     companion object {
         private var number = 0//现在在放第几首歌
@@ -54,8 +56,14 @@ class MusicActivity : AppCompatActivity() {
         override fun run() {
             while (true) {
                 while (isPlay) {
-                    mSeekBar.max = MusicService.mMediaPlayer.duration
-                    mSeekBar.progress = (MusicService.mMediaPlayer.currentPosition)
+                    //该判断条件说明MediaPlayer应该准备好了
+                    if (MusicService.mMediaPlayer.duration != 0) {
+                        mSeekBar.max = MusicService.mMediaPlayer.duration
+                    }
+                    //如果没在拖动进度条才实时更新歌曲进度
+                    if(!isDrag){
+                        mSeekBar.progress = (MusicService.mMediaPlayer.currentPosition)
+                    }
                     try {
                         // 每70毫秒更新一次位置
                         sleep(70);
@@ -154,16 +162,18 @@ class MusicActivity : AppCompatActivity() {
 
             //拖动条开始拖动的时候调用
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                //TODO("Not yet implemented")
+                isDrag=true
             }
 
             //拖动条停止拖动的时候调用
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                isDrag=false
                 musicManager.seekTo(progressNow)
             }
         })
     }
 
+    //封面旋转动画属性设置
     private fun initAnim() {
         rotationAnim = ObjectAnimator.ofFloat(mIvSongPhoto, "rotation", 0f, 359f)
         if (rotationAnim != null) {
@@ -191,7 +201,7 @@ class MusicActivity : AppCompatActivity() {
             Log.e(TAG, "service connected")
             musicManager = IMusic.Stub.asInterface(service)
             isBinder = true
-            thread.start()
+            thread.start()//服务连接后计时线程开启
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {

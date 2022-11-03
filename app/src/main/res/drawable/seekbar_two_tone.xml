@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <corners android:radius="10dp" />
+            <solid android:color="#4de9e9e9" />
+        </shape>
+    </item>
+    <item>
+        <clip>
+            <shape>
+                <corners android:radius="10dp" />
+                <solid android:color="#FFFFFF" />
+            </shape>
+        </clip>
+    </item>
+    <!--拖动的那个圆圈按钮，在它右边的进度条的颜色是通过第3行到第7行代码来设置的。
+    第10行到第15行的代码，设置了 thumb 左边的 track 的颜色-->
+</layer-list>

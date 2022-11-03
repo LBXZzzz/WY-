@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -24,6 +25,7 @@ import com.example.topviewap.entries.Song
 import com.example.topviewap.entries.SongData
 import com.example.topviewap.examples.Repository
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
 class MusicActivity : AppCompatActivity() {
     private var TAG = "MusicActivity"
@@ -32,16 +34,18 @@ class MusicActivity : AppCompatActivity() {
     private lateinit var song: Song
 
     private lateinit var mToolbar: Toolbar
-    private lateinit var mIvSongPhoto: ImageView//专辑封面的图片
+    private lateinit var mIvSongPhoto: CircleImageView//专辑封面的图片
     private lateinit var mIvPlay: ImageView//播放暂停按钮
     private lateinit var mIvPlayMode: ImageView//选择音乐播放模式的按钮
     private lateinit var mSeekBar: SeekBar
+    private lateinit var mTvSongName: TextView
+    private lateinit var mTvSingerName: TextView
 
     private var rotationAnim: ObjectAnimator? = null//封面旋转的动画属性
 
     private var isBinder = false//用来判断服务是否已经绑定，绑定则为true
     private var isPlay = false//用来判断歌曲是否在播放
-    private var isDrag=false//用来判断进度条是否在拖动
+    private var isDrag = false//用来判断进度条是否在拖动
     private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放。2为单曲循环，3为随机播放
 
 
@@ -61,7 +65,7 @@ class MusicActivity : AppCompatActivity() {
                         mSeekBar.max = MusicService.mMediaPlayer.duration
                     }
                     //如果没在拖动进度条才实时更新歌曲进度
-                    if(!isDrag){
+                    if (!isDrag) {
                         mSeekBar.progress = (MusicService.mMediaPlayer.currentPosition)
                     }
                     try {
@@ -105,14 +109,23 @@ class MusicActivity : AppCompatActivity() {
         mIvPlay = findViewById(R.id.iv_music_play_service)
         mIvPlayMode = findViewById(R.id.iv_play_mode_service)
         mSeekBar = findViewById(R.id.seekbar_service)
+        mTvSongName = findViewById(R.id.tv1_toolbar)
+        mTvSingerName = findViewById(R.id.tv2_toolbar)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
     }
 
     private fun initLayout() {
         Picasso.with(this)
             .load(song.al.picUrl)
+            .placeholder(R.drawable.loding)
             .resize(150, 150)
             .into(mIvSongPhoto)
+        mTvSongName.text = song.name
+        var singerName = ""
+        for (i in 0 until song.ar.size) {
+            singerName = song.ar[i].name + " "
+        }
+        mTvSingerName.text = singerName
     }
 
     //用来初始化音乐播放界面的按钮功能
@@ -162,12 +175,12 @@ class MusicActivity : AppCompatActivity() {
 
             //拖动条开始拖动的时候调用
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                isDrag=true
+                isDrag = true
             }
 
             //拖动条停止拖动的时候调用
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                isDrag=false
+                isDrag = false
                 musicManager.seekTo(progressNow)
             }
         })

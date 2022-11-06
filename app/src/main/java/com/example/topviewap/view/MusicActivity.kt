@@ -3,6 +3,7 @@ package com.example.topviewap.view
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.content.ServiceConnection
 import android.os.*
 import android.util.Log
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -62,7 +64,7 @@ class MusicActivity : AppCompatActivity() {
     val thread = object : Thread() {
         override fun run() {
             while (true) {
-                while (isPlay&&musicManager.isHavePre) {
+                while (isPlay && musicManager.isHavePre) {
                     val message = Message()
                     handler.sendMessage(message)
                     //该判断条件说明MediaPlayer应该准备好了
@@ -88,8 +90,8 @@ class MusicActivity : AppCompatActivity() {
     private val handler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            mTvTotalTime.text=Util.format(MusicService.mMediaPlayer.duration)
-            mTvCurrentTime.text=Util.format(MusicService.mMediaPlayer.currentPosition)
+            mTvTotalTime.text = Util.format(MusicService.mMediaPlayer.duration)
+            mTvCurrentTime.text = Util.format(MusicService.mMediaPlayer.currentPosition)
         }
     }
 
@@ -125,15 +127,18 @@ class MusicActivity : AppCompatActivity() {
         mSeekBar = findViewById(R.id.seekbar_service)
         mTvSongName = findViewById(R.id.tv1_toolbar)
         mTvSingerName = findViewById(R.id.tv2_toolbar)
-        mTvTotalTime=findViewById(R.id.tv_service_total_time)
-        mTvCurrentTime=findViewById(R.id.tv_service_current_time)
+        mTvTotalTime = findViewById(R.id.tv_service_total_time)
+        mTvCurrentTime = findViewById(R.id.tv_service_current_time)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
-        val songRoom=com.example.roompart.Song()
-        songRoom.id= song.id
-        val songRoomData=SongRoom(this)
+        val songRoom = com.example.roompart.Song()
+        songRoom.id = song.id
+        val songRoomData = SongRoom(this)
         //把歌曲id存入入数据库
         songRoomData.insert(songRoom)
-        Log.d("zwyuu",songRoomData.queryAll()[0].id.toString())
+        Log.d("zwyuu", songRoomData.queryAll()[0].id.toString())
+        if (MusicService.isPlayPre) {
+            MusicService.isNewSong = true
+        }
     }
 
     private fun initLayout() {
@@ -210,12 +215,16 @@ class MusicActivity : AppCompatActivity() {
 
     //封面旋转动画属性设置
     private fun initAnim() {
+        //第一个参数是需要旋转的View，
+        // 第二个是动画类型（包括alpha/rotation/scale/translate），
+        // 第三个参数是旋转开始时的角度
+        //第四个参数是旋转结束时的角
         rotationAnim = ObjectAnimator.ofFloat(mIvSongPhoto, "rotation", 0f, 359f)
         if (rotationAnim != null) {
             rotationAnim?.duration = (20 * 1000)
-            /*rotationAnim?.setInterpolator(LinearInterpolator())
-            rotationAnim?.setRepeatCount(-1)
-            rotationAnim?.setRepeatMode(ValueAnimator.RESTART)*/
+            rotationAnim?.interpolator = LinearInterpolator()//匀速
+            rotationAnim?.repeatCount = -1//设置动画重复次数（-1代表一直转）
+            rotationAnim?.repeatMode = ValueAnimator.RESTART//动画重复模式
             /*rotationAnim?.addUpdateListener(ValueAnimator.AnimatorUpdateListener { animation -> //更新歌曲封面旋转度同步
                 mIvPlay.setRotation(animation.animatedValue as Float)
             })*/

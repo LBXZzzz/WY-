@@ -38,7 +38,6 @@
     </androidx.appcompat.widget.Toolbar>
 
 
-
     <ProgressBar
         android:id="@+id/pb_search"
         android:layout_width="match_parent"
@@ -52,9 +51,9 @@
         app:layout_constraintTop_toBottomOf="@+id/search_too_bar">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/history"
@@ -71,6 +70,8 @@
                 android:id="@+id/wf_search"
                 android:layout_width="330dp"
                 android:layout_height="70dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="12dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/history" />

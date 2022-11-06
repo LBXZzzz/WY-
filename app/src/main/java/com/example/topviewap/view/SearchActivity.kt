@@ -132,9 +132,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initWaterFlowLayout() {
         val datas = arrayOf(
-            "guojingbu shi",
-            "baijun yu",
-            "wei zeng",
+            "薛之谦",
+            "邓紫棋",
+            "AGA",
             "zhao xue wei",
             "jin yong chang",
             "gaven",
@@ -149,8 +149,16 @@ class SearchActivity : AppCompatActivity() {
                 R.layout.waterflow_layout_view,
                 mWaterFlowLayout,
                 false
-            ) as TextView
+            ) as Button
             textView.text = datas[i]
+            textView.setOnClickListener() {
+                val key = textView.text.toString()
+                mLlyHot.visibility = View.GONE
+                mScrollView.visibility = View.GONE
+                mLlySong.visibility = View.VISIBLE
+                viewModel.search(key)
+                initRecyclerView(key)
+            }
             mWaterFlowLayout.addView(textView)
         }
     }

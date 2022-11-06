@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+
 class WaterFlowLayout @JvmOverloads constructor(
     context: Context?,
     attrs: AttributeSet? = null,
@@ -93,7 +94,7 @@ class WaterFlowLayout @JvmOverloads constructor(
                 lineViews = ArrayList()
             }
             lineWidth += childWidth + lp.leftMargin + lp.rightMargin
-            lineHeight = Math.max(lineHeight, childHeight + lp.topMargin + lp.bottomMargin)
+            lineHeight = Math.max(lineHeight, childHeight + lp.topMargin + lp.bottomMargin) + 6
             lineViews.add(childView)
         }
         //处理最后一行

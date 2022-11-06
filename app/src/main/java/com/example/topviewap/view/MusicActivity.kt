@@ -7,8 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Bundle
-import android.os.IBinder
+import android.os.*
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -20,10 +19,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.*
 import com.example.music.IMusic
 import com.example.music.MusicService
+import com.example.roompart.SongRoom
 import com.example.topviewap.R
 import com.example.topviewap.entries.Song
 import com.example.topviewap.entries.SongData
 import com.example.topviewap.examples.Repository
+import com.example.topviewap.utils.Util
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -40,6 +41,8 @@ class MusicActivity : AppCompatActivity() {
     private lateinit var mSeekBar: SeekBar
     private lateinit var mTvSongName: TextView
     private lateinit var mTvSingerName: TextView
+    private lateinit var mTvTotalTime: TextView
+    private lateinit var mTvCurrentTime: TextView
 
     private var rotationAnim: ObjectAnimator? = null//封面旋转的动画属性
 
@@ -60,6 +63,8 @@ class MusicActivity : AppCompatActivity() {
         override fun run() {
             while (true) {
                 while (isPlay) {
+                    val message = Message()
+                    handler.sendMessage(message)
                     //该判断条件说明MediaPlayer应该准备好了
                     if (MusicService.mMediaPlayer.duration != 0) {
                         mSeekBar.max = MusicService.mMediaPlayer.duration
@@ -71,11 +76,20 @@ class MusicActivity : AppCompatActivity() {
                     try {
                         // 每70毫秒更新一次位置
                         sleep(70);
+
                     } catch (e: InterruptedException) {
                         e.printStackTrace();
                     }
                 }
             }
+        }
+    }
+
+    private val handler: Handler = object : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            mTvTotalTime.text=Util.format(MusicService.mMediaPlayer.duration)
+            mTvCurrentTime.text=Util.format(MusicService.mMediaPlayer.currentPosition)
         }
     }
 
@@ -111,7 +125,15 @@ class MusicActivity : AppCompatActivity() {
         mSeekBar = findViewById(R.id.seekbar_service)
         mTvSongName = findViewById(R.id.tv1_toolbar)
         mTvSingerName = findViewById(R.id.tv2_toolbar)
+        mTvTotalTime=findViewById(R.id.tv_service_total_time)
+        mTvCurrentTime=findViewById(R.id.tv_service_current_time)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
+        val songRoom=com.example.roompart.Song()
+        songRoom.id= song.id
+        val songRoomData=SongRoom(this)
+        //把歌曲id存入入数据库
+        songRoomData.insert(songRoom)
+        Log.d("zwyuu",songRoomData.queryAll()[0].id.toString())
     }
 
     private fun initLayout() {

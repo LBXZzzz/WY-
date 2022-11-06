@@ -62,7 +62,7 @@ class MusicActivity : AppCompatActivity() {
     val thread = object : Thread() {
         override fun run() {
             while (true) {
-                while (isPlay) {
+                while (isPlay&&musicManager.isHavePre) {
                     val message = Message()
                     handler.sendMessage(message)
                     //该判断条件说明MediaPlayer应该准备好了

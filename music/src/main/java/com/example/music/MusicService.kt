@@ -5,6 +5,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnPreparedListener
 import android.os.IBinder
+import android.util.Log
 
 class MusicService : Service() {
 
@@ -47,6 +48,10 @@ class MusicService : Service() {
 
         override fun seekTo(time: Int) {
             mMediaPlayer.seekTo(time)
+        }
+
+        override fun isHavePre(): Boolean {
+            return isPlayPre
         }
 
     }

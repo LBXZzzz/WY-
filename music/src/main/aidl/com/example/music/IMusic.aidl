@@ -22,4 +22,7 @@ interface IMusic {
 
         //拖动进度条
         void seekTo(int time);
+
+        //判断音乐播放器是否准备好了
+        boolean isHavePre();
 }

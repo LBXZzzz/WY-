@@ -116,6 +116,7 @@ class SearchActivity : AppCompatActivity() {
         val adapter = HotDataRecyclerView(viewModel.dataList, applicationContext)
         adapter.mOnItemClickListener = object : HotDataRecyclerView.OnItemClickListener {
             override fun onItemClick(view: View?, position: Int) {
+                MusicActivity.isRoom = false
                 val intent = Intent(this@SearchActivity, MusicActivity::class.java).apply {
                     putExtra("song", SongDataPagingSource.songList[position])
                 }

@@ -61,8 +61,8 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
 
     companion object {
         private var number = 0//现在在放第几首歌
-        private var songList = ArrayList<Song>()
         lateinit var songRoomList: List<com.example.roompart.Song>
+        var isRoom = false//用来判断是否从数据库内加载音乐界面
     }
 
     private val viewModel by lazy { ViewModelProvider(this).get(MusicViewModal::class.java) }
@@ -107,13 +107,12 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         MusicService.mMediaPlayer.setOnCompletionListener(this)
         MusicService.mMediaPlayer.setOnErrorListener(this)
         song = intent.getSerializableExtra("song") as Song
-        songList.add(song)
         attemptToBindService()
         init()
         initLayout()
         initFunction()
         initAnim()
-        viewModel.searchSongUrl(songList[number].id.toString())
+        viewModel.searchSongUrl(song.id.toString())
         number++
         viewModel.searchSongLiveData.observe(this, Observer { result ->
             val data = result.getOrNull()
@@ -299,7 +298,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
                     number = 0
                 }
             }
-            2 ->{
+            2 -> {
 
             }
         }

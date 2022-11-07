@@ -15,6 +15,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.roompart.historyData.HistoryData
+import com.example.roompart.historyData.HistoryDataRoom
 import com.example.topviewap.R
 import com.example.topviewap.adapter.HotDataRecyclerView
 import com.example.topviewap.entries.Data
@@ -135,18 +137,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initWaterFlowLayout() {
-        val datas = arrayOf(
-            "薛之谦",
-            "邓紫棋",
-            "AGA",
-            "zhao xue wei",
-            "jin yong chang",
-            "gaven",
-            "zhu wen ling hen mei",
-            "xiao wu",
-            "yang",
-            "guo"
-        )
+        val historyDataRoom = HistoryDataRoom(this)
+        val datas = historyDataRoom.queryAll()
         val layoutInflater = LayoutInflater.from(this)
         for (i in datas.indices) {
             val textView = layoutInflater.inflate(
@@ -154,7 +146,7 @@ class SearchActivity : AppCompatActivity() {
                 mWaterFlowLayout,
                 false
             ) as Button
-            textView.text = datas[i]
+            textView.text = datas[i].data
             textView.setOnClickListener() {
                 val key = textView.text.toString()
                 mLlyHot.visibility = View.GONE
@@ -174,6 +166,10 @@ class SearchActivity : AppCompatActivity() {
             mScrollView.visibility = View.GONE
             mLlySong.visibility = View.VISIBLE
             viewModel.search(key)
+            val historyData = HistoryData()
+            historyData.data = key
+            val historyDataRoom = HistoryDataRoom(this)
+            historyDataRoom.insert(historyData)
             initRecyclerView(key)
             //点击回车后自动收起键盘
             val manager =

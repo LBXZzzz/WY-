@@ -1,4 +1,4 @@
-package com.example.roompart
+package com.example.roompart.song
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

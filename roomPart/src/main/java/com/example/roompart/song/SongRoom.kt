@@ -1,4 +1,4 @@
-package com.example.roompart
+package com.example.roompart.song
 
 import android.content.Context
 import androidx.room.Room
@@ -9,7 +9,7 @@ class SongRoom(val context: Context) {
 
     companion object{
         private var instance: SongDatabase? = null
-        fun get(context: Context):SongDatabase {
+        fun get(context: Context): SongDatabase {
             if (instance == null) {
                 instance = Room.databaseBuilder(context, SongDatabase::class.java, "user_.db")
                     .fallbackToDestructiveMigration()

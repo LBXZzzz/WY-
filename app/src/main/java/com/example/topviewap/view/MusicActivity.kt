@@ -21,7 +21,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.*
 import com.example.music.IMusic
 import com.example.music.MusicService
-import com.example.roompart.SongRoom
+import com.example.roompart.song.SongRoom
 import com.example.topviewap.R
 import com.example.topviewap.entries.Song
 import com.example.topviewap.entries.SongData
@@ -61,7 +61,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
 
     companion object {
         private var number = 0//现在在放第几首歌
-        lateinit var songRoomList: List<com.example.roompart.Song>
+        lateinit var songRoomList: List<com.example.roompart.song.Song>
         var isRoom = false//用来判断是否从数据库内加载音乐界面
     }
 
@@ -137,7 +137,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         mTvTotalTime = findViewById(R.id.tv_service_total_time)
         mTvCurrentTime = findViewById(R.id.tv_service_current_time)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
-        val songRoom = com.example.roompart.Song()
+        val songRoom = com.example.roompart.song.Song()
         songRoom.id = song.id
         songRoom.songName = song.name
         songRoom.singerName = song.ar[0].name

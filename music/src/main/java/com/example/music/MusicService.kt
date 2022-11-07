@@ -5,8 +5,6 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnPreparedListener
 import android.os.IBinder
-import android.util.Log
-import com.example.roompart.Song
 
 class MusicService : Service() {
 

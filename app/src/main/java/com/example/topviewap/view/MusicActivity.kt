@@ -29,8 +29,10 @@ import com.example.topviewap.examples.Repository
 import com.example.topviewap.utils.Util
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import android.media.MediaPlayer
 
-class MusicActivity : AppCompatActivity() {
+class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
+    MediaPlayer.OnErrorListener {
     private var TAG = "MusicActivity"
     private lateinit var musicManager: IMusic//可以调用服务里面播放音乐的功能
 
@@ -51,12 +53,16 @@ class MusicActivity : AppCompatActivity() {
     private var isBinder = false//用来判断服务是否已经绑定，绑定则为true
     private var isPlay = false//用来判断歌曲是否在播放
     private var isDrag = false//用来判断进度条是否在拖动
+    private var isRoom = false//用来判断是否从数据库内加载音乐界面
+
+
     private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放。2为单曲循环，3为随机播放
 
 
     companion object {
         private var number = 0//现在在放第几首歌
         private var songList = ArrayList<Song>()
+        lateinit var songRoomList: List<com.example.roompart.Song>
     }
 
     private val viewModel by lazy { ViewModelProvider(this).get(MusicViewModal::class.java) }
@@ -98,6 +104,8 @@ class MusicActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
+        MusicService.mMediaPlayer.setOnCompletionListener(this)
+        MusicService.mMediaPlayer.setOnErrorListener(this)
         song = intent.getSerializableExtra("song") as Song
         songList.add(song)
         attemptToBindService()
@@ -107,7 +115,7 @@ class MusicActivity : AppCompatActivity() {
         initAnim()
         viewModel.searchSongUrl(songList[number].id.toString())
         number++
-        viewModel.hotSearchLiveData.observe(this, Observer { result ->
+        viewModel.searchSongLiveData.observe(this, Observer { result ->
             val data = result.getOrNull()
             if (data != null) {
                 viewModel.hotDataList.clear()
@@ -132,26 +140,45 @@ class MusicActivity : AppCompatActivity() {
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
         val songRoom = com.example.roompart.Song()
         songRoom.id = song.id
+        songRoom.songName = song.name
+        songRoom.singerName = song.ar[0].name
+        songRoom.picUrl = song.al.picUrl
         val songRoomData = SongRoom(this)
         //把歌曲id存入入数据库
         songRoomData.insert(songRoom)
-        Log.d("zwyuu", songRoomData.queryAll()[0].id.toString())
         if (MusicService.isPlayPre) {
             MusicService.isNewSong = true
+        }
+        songRoomList = songRoomData.queryAll()
+        for (i in 0 until songRoomList.size) {
+            Log.d("zwyuu", songRoomList[i].id.toString())
+            Log.d("zwyuu", songRoomList[i].picUrl.toString())
+            Log.d("zwyuu", songRoomList[i].songName.toString())
+            Log.d("zwyuu", songRoomList[i].singerName.toString())
         }
     }
 
     private fun initLayout() {
+        var picUrl = ""
+        var songName = ""
+        var singerName = ""
+        if (isRoom) {
+            picUrl = songRoomList[number].picUrl.toString()
+            songName = songRoomList[number].songName.toString()
+            singerName = songRoomList[number].singerName.toString()
+        } else {
+            picUrl = song.al.picUrl
+            songName = song.name
+            for (i in 0 until song.ar.size) {
+                singerName = song.ar[i].name + " "
+            }
+        }
         Picasso.with(this)
-            .load(song.al.picUrl)
+            .load(picUrl)
             .placeholder(R.drawable.loding)
             .resize(150, 150)
             .into(mIvSongPhoto)
-        mTvSongName.text = song.name
-        var singerName = ""
-        for (i in 0 until song.ar.size) {
-            singerName = song.ar[i].name + " "
-        }
+        mTvSongName.text = songName
         mTvSingerName.text = singerName
     }
 
@@ -225,9 +252,6 @@ class MusicActivity : AppCompatActivity() {
             rotationAnim?.interpolator = LinearInterpolator()//匀速
             rotationAnim?.repeatCount = -1//设置动画重复次数（-1代表一直转）
             rotationAnim?.repeatMode = ValueAnimator.RESTART//动画重复模式
-            /*rotationAnim?.addUpdateListener(ValueAnimator.AnimatorUpdateListener { animation -> //更新歌曲封面旋转度同步
-                mIvPlay.setRotation(animation.animatedValue as Float)
-            })*/
             rotationAnim?.start()
             rotationAnim?.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator, isReverse: Boolean) {
@@ -265,10 +289,31 @@ class MusicActivity : AppCompatActivity() {
     }
 
 
+    override fun onCompletion(mp: MediaPlayer?) {
+        Log.e(TAG, "当前歌曲播放完毕")
+        isRoom = true
+        number++
+        if (number == songRoomList.size) {
+            number = 0
+        }
+        when (PLAY_MODE) {
+            1 -> {
+                viewModel.searchSongUrl(songRoomList[number].id.toString())
+            }
+        }
+        initLayout()
+        initFunction()
+        isRoom = false
+    }
+
+    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+        return true
+    }
+
     class MusicViewModal : ViewModel() {
         private val songData = MutableLiveData<String>()
         val hotDataList = mutableListOf<SongData>()
-        val hotSearchLiveData = Transformations.switchMap(songData) { id ->
+        val searchSongLiveData = Transformations.switchMap(songData) { id ->
             Repository.songUrlData(id)
         }
 

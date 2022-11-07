@@ -6,9 +6,11 @@ import android.media.MediaPlayer
 import android.media.MediaPlayer.OnPreparedListener
 import android.os.IBinder
 import android.util.Log
+import com.example.roompart.Song
 
 class MusicService : Service() {
 
+    private val TAG = "MusicService"
 
     companion object {
         var isPlayPre = false//判断歌曲是否准备过
@@ -64,4 +66,5 @@ class MusicService : Service() {
     override fun onBind(intent: Intent?): IBinder {
         return musicBinder
     }
+
 }

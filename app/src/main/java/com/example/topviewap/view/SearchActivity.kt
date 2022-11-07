@@ -28,6 +28,9 @@ import kotlinx.coroutines.launch
 
 
 class SearchActivity : AppCompatActivity() {
+
+    private val TAG = "SearchActivity"
+
     private lateinit var mToolbar: Toolbar
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mWaterFlowLayout: WaterFlowLayout

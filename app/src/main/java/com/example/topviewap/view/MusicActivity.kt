@@ -56,7 +56,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     private var isRoom = false//用来判断是否从数据库内加载音乐界面
 
 
-    private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放。2为单曲循环，3为随机播放
+    private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放,2为单曲循环，3为随机播放
 
 
     companion object {
@@ -292,15 +292,18 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     override fun onCompletion(mp: MediaPlayer?) {
         Log.e(TAG, "当前歌曲播放完毕")
         isRoom = true
-        number++
-        if (number == songRoomList.size) {
-            number = 0
-        }
         when (PLAY_MODE) {
             1 -> {
-                viewModel.searchSongUrl(songRoomList[number].id.toString())
+                number++
+                if (number == songRoomList.size) {
+                    number = 0
+                }
+            }
+            2 ->{
+
             }
         }
+        viewModel.searchSongUrl(songRoomList[number].id.toString())
         initLayout()
         initFunction()
         isRoom = false

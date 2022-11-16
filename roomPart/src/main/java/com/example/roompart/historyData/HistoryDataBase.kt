@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.example.roompart.song.Song
 import com.example.roompart.song.SongDao
 
-@Database(entities = [HistoryData::class], version = 1, exportSchema = false)
+@Database(entities = [HistoryData::class], version = 5, exportSchema = false)
 abstract class HistoryDataBase : RoomDatabase() {
     abstract fun historyData(): HistoryDataDao
 }

@@ -1,6 +1,7 @@
 package com.example.roompart.historyData
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 
 class HistoryDataRoom(val context: Context) {

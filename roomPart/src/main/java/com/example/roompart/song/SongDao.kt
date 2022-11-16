@@ -3,9 +3,9 @@ package com.example.roompart.song
 import androidx.room.*
 
 @Dao
-interface  SongDao {
+interface SongDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insert(song: Song)
 
     @Delete
@@ -15,9 +15,9 @@ interface  SongDao {
     fun update(song: Song)
 
     @Query("select * from Song where id =:id")
-    fun queryById(id:Int) : Song
+    fun queryById(id: Int): Song
 
     @Query("select * from Song")
-    fun queryAll():List<Song>
+    fun queryAll(): List<Song>
 
 }

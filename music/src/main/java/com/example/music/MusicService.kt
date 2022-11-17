@@ -5,8 +5,13 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnPreparedListener
 import android.os.IBinder
+import android.util.Log
+import com.example.music.songIdNetwork.Repository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class MusicService : Service() {
+class MusicService : Service() ,MediaPlayer.OnCompletionListener,
+MediaPlayer.OnErrorListener{
 
     private val TAG = "MusicService"
 
@@ -16,6 +21,11 @@ class MusicService : Service() {
         val mMediaPlayer = MediaPlayer()
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        mMediaPlayer.setOnCompletionListener(this)
+        mMediaPlayer.setOnErrorListener(this)
+    }
     private val musicBinder = object : IMusic.Stub() {
         override fun startMusic(url: String?) {
             if (isNewSong) {
@@ -63,6 +73,27 @@ class MusicService : Service() {
 
     override fun onBind(intent: Intent?): IBinder {
         return musicBinder
+    }
+
+    override fun onCompletion(mp: MediaPlayer?) {
+        /*when (PLAY_MODE) {
+            1 -> {
+                ++
+                if (number >= songRoomList.size) {
+                    number = 0
+                }
+            }
+            2 -> {
+
+            }
+        }*/
+         GlobalScope.launch {
+             val sb=Repository.songUrlData("516657051")
+        }
+    }
+
+    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+        TODO("Not yet implemented")
     }
 
 }

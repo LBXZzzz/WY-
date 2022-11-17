@@ -294,7 +294,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         when (PLAY_MODE) {
             1 -> {
                 number++
-                if (number == songRoomList.size) {
+                if (number >= songRoomList.size) {
                     number = 0
                 }
             }

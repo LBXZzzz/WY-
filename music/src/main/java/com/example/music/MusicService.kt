@@ -5,20 +5,23 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnPreparedListener
 import android.os.IBinder
-import android.util.Log
 import com.example.music.songIdNetwork.Repository
+import com.example.roompart.song.SongRoom
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class MusicService : Service() ,MediaPlayer.OnCompletionListener,
-MediaPlayer.OnErrorListener{
+class MusicService : Service(), MediaPlayer.OnCompletionListener,
+    MediaPlayer.OnErrorListener {
 
     private val TAG = "MusicService"
 
     companion object {
         var isPlayPre = false//判断歌曲是否准备过
         var isNewSong = false//判断一下是否要播放新歌
+        var songNumber = 0//当前在播放列表里的第几首歌
+        var PLAY_MODE = 1//当前的播放模式
         val mMediaPlayer = MediaPlayer()
+        lateinit var songRoomList: List<com.example.roompart.song.Song>
     }
 
     override fun onCreate() {
@@ -26,6 +29,7 @@ MediaPlayer.OnErrorListener{
         mMediaPlayer.setOnCompletionListener(this)
         mMediaPlayer.setOnErrorListener(this)
     }
+
     private val musicBinder = object : IMusic.Stub() {
         override fun startMusic(url: String?) {
             if (isNewSong) {
@@ -76,24 +80,30 @@ MediaPlayer.OnErrorListener{
     }
 
     override fun onCompletion(mp: MediaPlayer?) {
-        /*when (PLAY_MODE) {
+        val songRoomData = SongRoom(this)
+        songRoomList = songRoomData.queryAll()
+        when (PLAY_MODE) {
             1 -> {
-                ++
-                if (number >= songRoomList.size) {
-                    number = 0
+                songNumber++
+                if (songNumber >= songRoomList.size) {
+                    songNumber = 0
+                }
+                GlobalScope.launch {
+                    val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
+                    musicBinder.startMusic(sb)
                 }
             }
             2 -> {
 
             }
-        }*/
-         GlobalScope.launch {
-             val sb=Repository.songUrlData("516657051")
         }
+        val intent = Intent()
+        intent.action = "UPDATE"
+        sendBroadcast(intent)
     }
 
     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-        TODO("Not yet implemented")
+        return true
     }
 
 }

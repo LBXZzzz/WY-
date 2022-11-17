@@ -4,10 +4,8 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
+import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.View
@@ -29,7 +27,6 @@ import com.example.topviewap.examples.Repository
 import com.example.topviewap.utils.Util
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import android.media.MediaPlayer
 
 class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     MediaPlayer.OnErrorListener {
@@ -112,6 +109,10 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         initLayout()
         initFunction()
         initAnim()
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("UPDATE")
+        val musicBroadReceiver = MusicBroadReceiver()
+        registerReceiver(musicBroadReceiver, intentFilter)
         viewModel.searchSongUrl(song.id.toString())
         number++
         viewModel.searchSongLiveData.observe(this, Observer { result ->
@@ -201,17 +202,20 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         mIvPlayMode.setOnClickListener(View.OnClickListener { v: View? ->
             when (PLAY_MODE) {
                 1 -> {
+                    MusicService.PLAY_MODE = 2
                     PLAY_MODE = 2
                     mIvPlayMode.setImageResource(R.drawable.ic_list_play)
                     Toast.makeText(applicationContext, "列表播放", Toast.LENGTH_SHORT).show()
                 }
                 2 -> {
+                    MusicService.PLAY_MODE = 3
                     PLAY_MODE = 3
                     mIvPlayMode.setImageResource(R.drawable.ic_loop_playback)
                     Toast.makeText(applicationContext, "单曲循环", Toast.LENGTH_SHORT).show()
                 }
                 3 -> {
                     PLAY_MODE = 1
+                    MusicService.PLAY_MODE = 1
                     mIvPlayMode.setImageResource(R.drawable.ic_random_play)
                     Toast.makeText(applicationContext, "随机播放", Toast.LENGTH_SHORT).show()
                 }
@@ -291,21 +295,22 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     override fun onCompletion(mp: MediaPlayer?) {
         Log.e(TAG, "当前歌曲播放完毕")
         isRoom = true
-        when (PLAY_MODE) {
-            1 -> {
-                number++
-                if (number >= songRoomList.size) {
-                    number = 0
-                }
-            }
-            2 -> {
-
-            }
-        }
-        viewModel.searchSongUrl(songRoomList[number].id.toString())
+        number = MusicService.songNumber
         initLayout()
         initFunction()
         isRoom = false
+    }
+
+    inner class MusicBroadReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Log.e(TAG, "当前歌曲播放完毕")
+            isRoom = true
+            number = MusicService.songNumber
+            initLayout()
+            initFunction()
+            isRoom = false
+        }
+
     }
 
     override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {

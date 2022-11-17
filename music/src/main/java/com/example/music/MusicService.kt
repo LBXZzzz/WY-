@@ -5,6 +5,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnPreparedListener
 import android.os.IBinder
+import android.util.Log
 import com.example.music.songIdNetwork.Repository
 import com.example.roompart.song.SongRoom
 import kotlinx.coroutines.GlobalScope
@@ -32,9 +33,11 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
 
     private val musicBinder = object : IMusic.Stub() {
         override fun startMusic(url: String?) {
+            Log.d("zwytt", url.toString())
             if (isNewSong) {
                 mMediaPlayer.reset()
                 isPlayPre = false
+                isNewSong = false
             }
             if (!isPlayPre) {
                 mMediaPlayer.setDataSource(url)
@@ -42,6 +45,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                 mMediaPlayer.setOnPreparedListener(OnPreparedListener { mp: MediaPlayer? ->
                     mMediaPlayer.start()
                     isPlayPre = true
+                    Log.e("zwyii", "llllllllssss")
                 })
             } else {
                 mMediaPlayer.start()

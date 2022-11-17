@@ -81,7 +81,6 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
                     try {
                         // 每70毫秒更新一次位置
                         sleep(70);
-
                     } catch (e: InterruptedException) {
                         e.printStackTrace();
                     }

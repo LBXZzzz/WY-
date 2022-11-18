@@ -209,20 +209,20 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
                 1 -> {
                     MusicService.PLAY_MODE = 2
                     PLAY_MODE = 2
-                    mIvPlayMode.setImageResource(R.drawable.ic_list_play)
-                    Toast.makeText(applicationContext, "列表播放", Toast.LENGTH_SHORT).show()
+                    mIvPlayMode.setImageResource(R.drawable.ic_loop_playback)
+                    Toast.makeText(applicationContext, "单曲循环", Toast.LENGTH_SHORT).show()
                 }
                 2 -> {
                     MusicService.PLAY_MODE = 3
                     PLAY_MODE = 3
-                    mIvPlayMode.setImageResource(R.drawable.ic_loop_playback)
-                    Toast.makeText(applicationContext, "单曲循环", Toast.LENGTH_SHORT).show()
+                    mIvPlayMode.setImageResource(R.drawable.ic_random_play)
+                    Toast.makeText(applicationContext, "随机播放", Toast.LENGTH_SHORT).show()
                 }
                 3 -> {
                     PLAY_MODE = 1
                     MusicService.PLAY_MODE = 1
-                    mIvPlayMode.setImageResource(R.drawable.ic_random_play)
-                    Toast.makeText(applicationContext, "随机播放", Toast.LENGTH_SHORT).show()
+                    mIvPlayMode.setImageResource(R.drawable.ic_list_play)
+                    Toast.makeText(applicationContext, "列表播放", Toast.LENGTH_SHORT).show()
                 }
             }
 

@@ -109,6 +109,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
 
     override fun onCompletion(mp: MediaPlayer?) {
         songRoomList = getRoomList()
+        Log.e("zwyoo", PLAY_MODE.toString())
         when (PLAY_MODE) {
             1 -> {
                 songNumber++
@@ -122,7 +123,11 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                 }
             }
             2 -> {
-
+                GlobalScope.launch {
+                    isNewSong = true
+                    val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
+                    musicBinder.startMusic(sb)
+                }
             }
         }
         //发送广播MusicActivity，让其更新布局

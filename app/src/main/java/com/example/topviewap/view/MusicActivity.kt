@@ -10,6 +10,7 @@ import android.os.*
 import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -44,6 +45,9 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     private lateinit var mTvSingerName: TextView
     private lateinit var mTvTotalTime: TextView
     private lateinit var mTvCurrentTime: TextView
+    private lateinit var mBtNextSong: ImageView
+    private lateinit var mBtPreSong: ImageView
+
 
     private var rotationAnim: ObjectAnimator? = null//封面旋转的动画属性
 
@@ -136,6 +140,8 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         mTvSingerName = findViewById(R.id.tv2_toolbar)
         mTvTotalTime = findViewById(R.id.tv_service_total_time)
         mTvCurrentTime = findViewById(R.id.tv_service_current_time)
+        mBtNextSong = findViewById(R.id.iv_next_song_service)
+        mBtPreSong = findViewById(R.id.iv_pre_song_service)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
         val songRoom = com.example.roompart.song.Song()
         songRoom.id = song.id
@@ -221,6 +227,22 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
             }
 
         })
+        mBtNextSong.setOnClickListener { v: View? ->
+            musicManager.nextSong()
+            isRoom = true
+            number = MusicService.songNumber
+            initLayout()
+            initFunction()
+            isRoom = false
+        }
+        mBtPreSong.setOnClickListener {
+            musicManager.preSong()
+            isRoom = true
+            number = MusicService.songNumber
+            initLayout()
+            initFunction()
+            isRoom = false
+        }
         mSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             var progressNow = 0
 

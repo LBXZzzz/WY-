@@ -33,7 +33,6 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
 
     private val musicBinder = object : IMusic.Stub() {
         override fun startMusic(url: String?) {
-            Log.d("zwytt", url.toString())
             if (isNewSong) {
                 mMediaPlayer.reset()
                 isPlayPre = false
@@ -45,7 +44,6 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                 mMediaPlayer.setOnPreparedListener(OnPreparedListener { mp: MediaPlayer? ->
                     mMediaPlayer.start()
                     isPlayPre = true
-                    Log.e("zwyii", "llllllllssss")
                 })
             } else {
                 mMediaPlayer.start()
@@ -61,12 +59,38 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
         }
 
         override fun nextSong() {
-            TODO("Not yet implemented")
+            songRoomList = getRoomList()
+            songNumber++
+            if (songNumber >= songRoomList.size) {
+                songNumber = 0
+            }
+            GlobalScope.launch {
+                isNewSong = true
+                val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
+                startMusic(sb)
+            }
+            //发送广播MusicActivity，让其更新布局
+            val intent = Intent()
+            intent.action = "UPDATE"
+            sendBroadcast(intent)
         }
 
 
         override fun preSong() {
-            TODO("Not yet implemented")
+            songRoomList = getRoomList()
+            songNumber--
+            if (songNumber < 0) {
+                songNumber = songRoomList.size
+            }
+            GlobalScope.launch {
+                isNewSong = true
+                val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
+                startMusic(sb)
+            }
+            //发送广播MusicActivity，让其更新布局
+            val intent = Intent()
+            intent.action = "UPDATE"
+            sendBroadcast(intent)
         }
 
         override fun seekTo(time: Int) {
@@ -84,8 +108,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
     }
 
     override fun onCompletion(mp: MediaPlayer?) {
-        val songRoomData = SongRoom(this)
-        songRoomList = songRoomData.queryAll()
+        songRoomList = getRoomList()
         when (PLAY_MODE) {
             1 -> {
                 songNumber++
@@ -93,6 +116,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                     songNumber = 0
                 }
                 GlobalScope.launch {
+                    isNewSong = true
                     val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
                     musicBinder.startMusic(sb)
                 }
@@ -101,6 +125,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
 
             }
         }
+        //发送广播MusicActivity，让其更新布局
         val intent = Intent()
         intent.action = "UPDATE"
         sendBroadcast(intent)
@@ -110,4 +135,8 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
         return true
     }
 
+    private fun getRoomList(): List<com.example.roompart.song.Song> {
+        val songRoomData = SongRoom(this)
+        return songRoomData.queryAll()
+    }
 }

@@ -1,6 +1,8 @@
 package com.example.music
 
+import android.annotation.SuppressLint
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnPreparedListener
@@ -39,6 +41,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                 isNewSong = false
             }
             if (!isPlayPre) {
+                Log.e(TAG, "当前播放歌曲的url:${url}")
                 mMediaPlayer.setDataSource(url)
                 mMediaPlayer.prepareAsync()
                 mMediaPlayer.setOnPreparedListener(OnPreparedListener { mp: MediaPlayer? ->
@@ -60,6 +63,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
 
         override fun nextSong() {
             songRoomList = getRoomList()
+            songNumber = getSongNumber()
             songNumber++
             if (songNumber >= songRoomList.size) {
                 songNumber = 0
@@ -69,6 +73,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                 val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
                 startMusic(sb)
             }
+            saveSongNumber(songNumber)
             //发送广播MusicActivity，让其更新布局
             val intent = Intent()
             intent.action = "UPDATE"
@@ -78,15 +83,17 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
 
         override fun preSong() {
             songRoomList = getRoomList()
+            songNumber = getSongNumber()
             songNumber--
             if (songNumber < 0) {
-                songNumber = songRoomList.size
+                songNumber = songRoomList.size - 1
             }
             GlobalScope.launch {
                 isNewSong = true
                 val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
                 startMusic(sb)
             }
+            saveSongNumber(songNumber)
             //发送广播MusicActivity，让其更新布局
             val intent = Intent()
             intent.action = "UPDATE"
@@ -107,9 +114,10 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
         return musicBinder
     }
 
+    @SuppressLint("CommitPrefEdits")
     override fun onCompletion(mp: MediaPlayer?) {
+        songNumber = getSongNumber()
         songRoomList = getRoomList()
-        Log.e("zwyoo", PLAY_MODE.toString())
         when (PLAY_MODE) {
             1 -> {
                 songNumber++
@@ -130,6 +138,8 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                 }
             }
         }
+        //把当前播放第几首歌存起来
+        saveSongNumber(songNumber)
         //发送广播MusicActivity，让其更新布局
         val intent = Intent()
         intent.action = "UPDATE"
@@ -143,5 +153,16 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
     private fun getRoomList(): List<com.example.roompart.song.Song> {
         val songRoomData = SongRoom(this)
         return songRoomData.queryAll()
+    }
+
+    private fun getSongNumber(): Int {
+        val prefs = getSharedPreferences("songNumberData", Context.MODE_PRIVATE)
+        return prefs.getInt("songNumber", 0)
+    }
+
+    private fun saveSongNumber(number: Int) {
+        val editor = getSharedPreferences("songNumberData", Context.MODE_PRIVATE).edit()
+        editor.putInt("songNumber", number)
+        editor.apply()//注意不要遗漏这一个，不然没保存
     }
 }

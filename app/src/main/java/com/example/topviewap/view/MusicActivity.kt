@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.*
 import android.media.MediaPlayer
 import android.os.*
@@ -61,7 +62,6 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
 
 
     companion object {
-        private var number = 0//现在在放第几首歌
         lateinit var songRoomList: List<com.example.roompart.song.Song>
         var isRoom = false//用来判断是否从数据库内加载音乐界面
     }
@@ -117,7 +117,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         val musicBroadReceiver = MusicBroadReceiver()
         registerReceiver(musicBroadReceiver, intentFilter)
         viewModel.searchSongUrl(song.id.toString())
-        number++
+        MusicService.songNumber++
         viewModel.searchSongLiveData.observe(this, Observer { result ->
             val data = result.getOrNull()
             if (data != null) {
@@ -161,6 +161,9 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
             Log.d("zwyuu", songRoomList[i].songName.toString())
             Log.d("zwyuu", songRoomList[i].singerName.toString())
         }
+        val editor = getSharedPreferences("songNumberData", Context.MODE_PRIVATE).edit()
+        editor.putInt("songNumber", songRoomList.size - 1)
+        editor.apply()
     }
 
     private fun initLayout() {
@@ -168,9 +171,9 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         var songName = ""
         var singerName = ""
         if (isRoom) {
-            picUrl = songRoomList[number].picUrl.toString()
-            songName = songRoomList[number].songName.toString()
-            singerName = songRoomList[number].singerName.toString()
+            picUrl = songRoomList[MusicService.songNumber].picUrl.toString()
+            songName = songRoomList[MusicService.songNumber].songName.toString()
+            singerName = songRoomList[MusicService.songNumber].singerName.toString()
         } else {
             picUrl = song.al.picUrl
             songName = song.name
@@ -230,7 +233,6 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         mBtNextSong.setOnClickListener { v: View? ->
             musicManager.nextSong()
             isRoom = true
-            number = MusicService.songNumber
             initLayout()
             initFunction()
             isRoom = false
@@ -238,7 +240,6 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         mBtPreSong.setOnClickListener {
             musicManager.preSong()
             isRoom = true
-            number = MusicService.songNumber
             initLayout()
             initFunction()
             isRoom = false
@@ -316,7 +317,6 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     override fun onCompletion(mp: MediaPlayer?) {
         Log.e(TAG, "当前歌曲播放完毕")
         isRoom = true
-        number = MusicService.songNumber
         initLayout()
         initFunction()
         isRoom = false
@@ -326,7 +326,6 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         override fun onReceive(context: Context, intent: Intent) {
             Log.e(TAG, "当前歌曲播放完毕")
             isRoom = true
-            number = MusicService.songNumber
             initLayout()
             initFunction()
             isRoom = false

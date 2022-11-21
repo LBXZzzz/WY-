@@ -23,4 +23,7 @@ object HotSearchData {
 
     //调用此方法可以通过歌曲id获取歌曲Url
     suspend fun songUrl(id: String) = hotSearchDataService.getSongUrl(id)
+
+    //调用此方法可以获取歌词
+    suspend fun lycData(id: String) = hotSearchDataService.getLyc(id)
 }

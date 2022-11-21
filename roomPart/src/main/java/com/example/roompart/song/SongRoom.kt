@@ -12,6 +12,7 @@ class SongRoom(val context: Context) {
         fun get(context: Context): SongDatabase {
             if (instance == null) {
                 instance = Room.databaseBuilder(context, SongDatabase::class.java, "user_.db")
+                    //数据库升级异常之后的回滚
                     .fallbackToDestructiveMigration()
                     //是否允许在主线程进行查询
                     .allowMainThreadQueries()

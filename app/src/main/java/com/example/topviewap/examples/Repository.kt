@@ -70,7 +70,27 @@ object Repository {
             }
 
         } catch (e: Exception) {
-            Log.d("zwyuu", e.toString())
+            Result.failure(e)
+
+        }
+        //emit()方法其实类似于调用LiveData的setValue()方法来通知数据变化
+        emit(result)
+    }
+
+    fun songLycData(id: String) = liveData(Dispatchers.IO) {
+        //liveData()函数自动构建并返回一个LiveData对象
+        val result = try {
+            //开始搜索数据，返回码为200则成功
+            val searchData = HotSearchData.lycData(id)
+            if (HotSearchData.songUrl(id).code == 200) {
+                val searchDataList = searchData
+                //使用Kotlin内置的Result.success()方法来包装获取的数据列表
+                Result.success(searchDataList)
+            } else {
+                Result.failure(RuntimeException(""))
+            }
+
+        } catch (e: Exception) {
             Result.failure(e)
 
         }

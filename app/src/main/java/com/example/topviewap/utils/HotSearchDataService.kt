@@ -1,6 +1,7 @@
 package com.example.topviewap.utils
 
 import com.example.topviewap.entries.HotData
+import com.example.topviewap.entries.LycData
 import com.example.topviewap.entries.SearchData
 import com.example.topviewap.entries.SongUrlData
 import retrofit2.http.GET
@@ -22,4 +23,9 @@ interface HotSearchDataService {
     suspend fun getSongUrl(
         @Query("id") keywords: String,
     ): SongUrlData
+
+    @GET("/lyric")
+    suspend fun getLyc(
+        @Query("id") keywords: String,
+    ): LycData
 }

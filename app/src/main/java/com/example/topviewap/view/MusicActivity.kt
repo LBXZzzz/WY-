@@ -4,14 +4,12 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.*
 import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
@@ -23,6 +21,7 @@ import com.example.music.IMusic
 import com.example.music.MusicService
 import com.example.roompart.song.SongRoom
 import com.example.topviewap.R
+import com.example.topviewap.entries.LycData
 import com.example.topviewap.entries.Song
 import com.example.topviewap.entries.SongData
 import com.example.topviewap.examples.Repository
@@ -118,6 +117,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         registerReceiver(musicBroadReceiver, intentFilter)
         viewModel.searchSongUrl(song.id.toString())
         MusicService.songNumber++
+        viewModel.searchLyc(song.id.toString())
         viewModel.searchSongLiveData.observe(this, Observer { result ->
             val data = result.getOrNull()
             if (data != null) {
@@ -126,6 +126,14 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
                 if (isBinder) {
                     musicManager.startMusic(viewModel.hotDataList[0].url)
                 }
+            }
+        })
+        viewModel.lycSongLiveData.observe(this, Observer {
+            val data = it.getOrNull()
+            if (data != null) {
+                viewModel.lycList.clear()
+                viewModel.lycList.add(data)
+                Log.d("zwyuuuu", data.toString())
             }
         })
     }
@@ -346,6 +354,16 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
 
         fun searchSongUrl(id: String) {
             songData.value = id
+        }
+
+        private val lyc = MutableLiveData<String>()
+        val lycList = mutableListOf<LycData>()
+        val lycSongLiveData = Transformations.switchMap(lyc) { id ->
+            Repository.songLycData(id)
+        }
+
+        fun searchLyc(id: String) {
+            lyc.value = id
         }
     }
 }

@@ -83,9 +83,9 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
                     }
                     try {
                         // 每70毫秒更新一次位置
-                        sleep(70);
+                        sleep(70)
                     } catch (e: InterruptedException) {
-                        e.printStackTrace();
+                        e.printStackTrace()
                     }
                 }
             }
@@ -133,7 +133,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
             if (data != null) {
                 viewModel.lycList.clear()
                 viewModel.lycList.add(data)
-                Log.d("zwyuuuu", data.toString())
+                Util.lycRow(data.lrc.lyric)
             }
         })
     }
@@ -175,8 +175,8 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     }
 
     private fun initLayout() {
-        var picUrl = ""
-        var songName = ""
+        val picUrl: String
+        val songName: String
         var singerName = ""
         if (isRoom) {
             picUrl = songRoomList[MusicService.songNumber].picUrl.toString()

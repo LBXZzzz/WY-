@@ -107,6 +107,10 @@ class SearchActivity : AppCompatActivity() {
                 mScrollView.visibility = View.GONE
                 mLlySong.visibility = View.VISIBLE
                 viewModel.search(key)
+                val historyDataRoom = HistoryDataRoom(this)
+                val historyData = HistoryData()
+                historyData.data = key
+                historyDataRoom.insert(historyData)
                 initRecyclerView(key)
             })
         }

@@ -1,5 +1,6 @@
 package com.example.topviewap.utils
 
+import android.util.Log
 import com.example.topviewap.entries.Lyric
 
 class Util {

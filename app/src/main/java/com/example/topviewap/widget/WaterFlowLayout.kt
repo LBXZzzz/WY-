@@ -5,6 +5,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 
+/**
+ * 自定义流式布局
+ */
 class WaterFlowLayout @JvmOverloads constructor(
     context: Context?,
     attrs: AttributeSet? = null,

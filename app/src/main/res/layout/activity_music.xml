@@ -41,6 +41,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/music_lly_music_photo"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center_vertical"
@@ -49,6 +50,7 @@
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/music_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -62,6 +64,12 @@
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal" />
         </androidx.cardview.widget.CardView>
+        <com.example.topviewap.widget.LycView
+            android:id="@+id/lyc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lineSpacing="30dp"
+            app:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout

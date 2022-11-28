@@ -5,17 +5,18 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.*
-import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.*
 import com.example.music.IMusic
 import com.example.music.MusicService
@@ -26,11 +27,11 @@ import com.example.topviewap.entries.Song
 import com.example.topviewap.entries.SongData
 import com.example.topviewap.examples.Repository
 import com.example.topviewap.utils.Util
+import com.example.topviewap.widget.LycView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
-    MediaPlayer.OnErrorListener {
+class MusicActivity : AppCompatActivity(), View.OnClickListener{
     private var TAG = "MusicActivity"
     private lateinit var musicManager: IMusic//可以调用服务里面播放音乐的功能
 
@@ -47,6 +48,9 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     private lateinit var mTvCurrentTime: TextView
     private lateinit var mBtNextSong: ImageView
     private lateinit var mBtPreSong: ImageView
+    private lateinit var lycView: LycView//歌词的view
+    private lateinit var llyPhoto:LinearLayout
+    private lateinit var cvPhoto :CardView
 
 
     private var rotationAnim: ObjectAnimator? = null//封面旋转的动画属性
@@ -103,8 +107,6 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
-        MusicService.mMediaPlayer.setOnCompletionListener(this)
-        MusicService.mMediaPlayer.setOnErrorListener(this)
         song = intent.getSerializableExtra("song") as Song
         attemptToBindService()
         init()
@@ -126,6 +128,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
                 if (isBinder) {
                     musicManager.startMusic(viewModel.hotDataList[0].url)
                 }
+
             }
         })
         viewModel.lycSongLiveData.observe(this, Observer {
@@ -133,7 +136,8 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
             if (data != null) {
                 viewModel.lycList.clear()
                 viewModel.lycList.add(data)
-                Util.lycRow(data.lrc.lyric)
+                lycView.setLycList(Util.lycRow(viewModel.lycList[0].lrc.lyric))
+                lycView.draw()
             }
         })
     }
@@ -150,6 +154,10 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
         mTvCurrentTime = findViewById(R.id.tv_service_current_time)
         mBtNextSong = findViewById(R.id.iv_next_song_service)
         mBtPreSong = findViewById(R.id.iv_pre_song_service)
+        lycView=findViewById(R.id.lyc)
+        cvPhoto=findViewById(R.id.music_card_view)
+        cvPhoto.setOnClickListener(this)
+        lycView.setOnClickListener(this)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
         val songRoom = com.example.roompart.song.Song()
         songRoom.id = song.id
@@ -322,13 +330,7 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
     }
 
 
-    override fun onCompletion(mp: MediaPlayer?) {
-        Log.e(TAG, "当前歌曲播放完毕")
-        isRoom = true
-        initLayout()
-        initFunction()
-        isRoom = false
-    }
+
 
     inner class MusicBroadReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -339,10 +341,6 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
             isRoom = false
         }
 
-    }
-
-    override fun onError(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-        return true
     }
 
     class MusicViewModal : ViewModel() {
@@ -364,6 +362,23 @@ class MusicActivity : AppCompatActivity(), MediaPlayer.OnCompletionListener,
 
         fun searchLyc(id: String) {
             lyc.value = id
+        }
+    }
+
+    override fun onClick(v: View) {
+        showLycViewAndPhoto(v.id)
+    }
+
+    private fun showLycViewAndPhoto(id:Int){
+        when(id){
+            R.id.lyc->{
+                lycView.visibility=View.GONE
+                cvPhoto.visibility=View.VISIBLE
+            }
+            R.id.music_card_view->{
+                lycView.visibility=View.VISIBLE
+                cvPhoto.visibility=View.GONE
+            }
         }
     }
 }

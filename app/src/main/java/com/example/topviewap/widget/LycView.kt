@@ -105,7 +105,7 @@ class LycView : View {
             getCurrentPosition()//得到当前歌词的位置
             drawLrc(canvas!!)//画歌词
             scrollLrc()//歌词滑动
-            postInvalidateDelayed(10)//延迟0.01s刷新
+            postInvalidateDelayed(100)//延迟0.01s刷新
         }
 
     }
@@ -128,9 +128,6 @@ class LycView : View {
         //注意这里是直接获取的mediaPlayer的时间
         val curTime = MusicService.mMediaPlayer.currentPosition
         //如果当前的时间大于10分钟，证明歌曲未播放，则当前位置应该为0
-        if (lycList == null) {
-            TODO("集合为空")
-        }
         if (curTime < lycList!![0].startTime || curTime > 10 * 60 * 1000) {
             currentPosition = 0
             return

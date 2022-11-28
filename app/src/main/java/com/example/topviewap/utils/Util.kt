@@ -51,6 +51,7 @@ class Util {
             val str: List<String> = sb.split("/n")
             //特别注意根据此方法获得的字符串数组第一个为空，所以要从1开始
             for (i in 1 until str.size) {
+
                 val lastIndexOfRightBracket: Int = str[i].lastIndexOf("]")
                 val content: String =
                     str[i].substring(lastIndexOfRightBracket + 1, str[i].length)
@@ -72,7 +73,7 @@ class Util {
             val second = Integer.parseInt(strTime[1]);
             val millisecond = Integer.parseInt(strTime[2]);
             //计算上一行与下一行的时间转换为毫秒数
-            val currentTime = (minute * 60 + second) * 1000 + millisecond * 10;
+            val currentTime = (minute * 60 + second) * 1000 + millisecond
             return currentTime;
         }
     }

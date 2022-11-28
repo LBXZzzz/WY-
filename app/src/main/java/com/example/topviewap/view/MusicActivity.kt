@@ -31,7 +31,7 @@ import com.example.topviewap.widget.LycView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class MusicActivity : AppCompatActivity(), View.OnClickListener{
+class MusicActivity : AppCompatActivity(), View.OnClickListener {
     private var TAG = "MusicActivity"
     private lateinit var musicManager: IMusic//可以调用服务里面播放音乐的功能
 
@@ -49,8 +49,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener{
     private lateinit var mBtNextSong: ImageView
     private lateinit var mBtPreSong: ImageView
     private lateinit var lycView: LycView//歌词的view
-    private lateinit var llyPhoto:LinearLayout
-    private lateinit var cvPhoto :CardView
+    private lateinit var cvPhoto: CardView
 
 
     private var rotationAnim: ObjectAnimator? = null//封面旋转的动画属性
@@ -109,6 +108,8 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener{
         setContentView(R.layout.activity_music)
         song = intent.getSerializableExtra("song") as Song
         attemptToBindService()
+        viewModel.searchSongUrl(song.id.toString())
+        viewModel.searchLyc(song.id.toString())
         init()
         initLayout()
         initFunction()
@@ -117,9 +118,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener{
         intentFilter.addAction("UPDATE")
         val musicBroadReceiver = MusicBroadReceiver()
         registerReceiver(musicBroadReceiver, intentFilter)
-        viewModel.searchSongUrl(song.id.toString())
         MusicService.songNumber++
-        viewModel.searchLyc(song.id.toString())
         viewModel.searchSongLiveData.observe(this, Observer { result ->
             val data = result.getOrNull()
             if (data != null) {
@@ -154,8 +153,8 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener{
         mTvCurrentTime = findViewById(R.id.tv_service_current_time)
         mBtNextSong = findViewById(R.id.iv_next_song_service)
         mBtPreSong = findViewById(R.id.iv_pre_song_service)
-        lycView=findViewById(R.id.lyc)
-        cvPhoto=findViewById(R.id.music_card_view)
+        lycView = findViewById(R.id.lyc)
+        cvPhoto = findViewById(R.id.music_card_view)
         cvPhoto.setOnClickListener(this)
         lycView.setOnClickListener(this)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
@@ -330,8 +329,6 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener{
     }
 
 
-
-
     inner class MusicBroadReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.e(TAG, "当前歌曲播放完毕")
@@ -369,15 +366,15 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener{
         showLycViewAndPhoto(v.id)
     }
 
-    private fun showLycViewAndPhoto(id:Int){
-        when(id){
-            R.id.lyc->{
-                lycView.visibility=View.GONE
-                cvPhoto.visibility=View.VISIBLE
+    private fun showLycViewAndPhoto(id: Int) {
+        when (id) {
+            R.id.lyc -> {
+                lycView.visibility = View.GONE
+                cvPhoto.visibility = View.VISIBLE
             }
-            R.id.music_card_view->{
-                lycView.visibility=View.VISIBLE
-                cvPhoto.visibility=View.GONE
+            R.id.music_card_view -> {
+                lycView.visibility = View.VISIBLE
+                cvPhoto.visibility = View.GONE
             }
         }
     }

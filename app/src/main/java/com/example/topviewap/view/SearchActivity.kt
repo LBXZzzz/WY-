@@ -37,7 +37,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var mToolbar: Toolbar
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mWaterFlowLayout: WaterFlowLayout
-    private lateinit var mProgressBar: ProgressBar
+    private lateinit var mProgressBar: ProgressBar//加载条
     private lateinit var mLlySong: LinearLayout //搜索出来歌曲rv的LinearLayout
     private lateinit var mLlyHot: LinearLayout //热搜榜单的LinearLayout
     private lateinit var mEd: AppCompatEditText
@@ -50,6 +50,7 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         init()
+        mToolbar.title=""
         setSupportActionBar(mToolbar)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
@@ -88,6 +89,9 @@ class SearchActivity : AppCompatActivity() {
         mScrollView = findViewById(R.id.scrollView)
     }
 
+    /**
+     * 初始化热搜榜
+     */
     private fun initHotRank() {
         //初始化热搜榜单
         for (i in 0 until viewModel.hotDataList.size) {
@@ -116,7 +120,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 初始化RecyclerView
+     */
     private fun initRecyclerView(key: String) {
+
         //对recyclerView做一些初始化操作
         val layoutManager = LinearLayoutManager(this)
         mRecyclerView.layoutManager = layoutManager
@@ -131,6 +139,8 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         mRecyclerView.adapter = adapter
+        mProgressBar.visibility=View.GONE
+        mLlySong.visibility=View.VISIBLE
         //这个函数是触发Paging 3分页功能的核心，调用这个函数之后，Paging 3就开始工作了
         //collect()函数是一个挂起函数，只有在协程作用域中才能调用它
         lifecycleScope.launch {
@@ -141,6 +151,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    //初始化流式布局
     private fun initWaterFlowLayout() {
         val historyDataRoom = HistoryDataRoom(this)
         val datas = historyDataRoom.queryAll()
@@ -169,7 +180,9 @@ class SearchActivity : AppCompatActivity() {
             val key = mEd.text.toString()
             mLlyHot.visibility = View.GONE
             mScrollView.visibility = View.GONE
-            mLlySong.visibility = View.VISIBLE
+            mLlySong.visibility = View.GONE
+            mWaterFlowLayout.visibility=View.GONE
+            mProgressBar.visibility=View.VISIBLE
             viewModel.search(key)
             val historyData = HistoryData()
             historyData.data = key

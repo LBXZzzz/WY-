@@ -53,7 +53,7 @@ class LycView : View {
         lrcTextColor =
             ta.getColor(com.example.topviewap.R.styleable.LrcView_lrcTextColor, Color.GRAY)
         highLineTextColor =
-            ta.getColor(com.example.topviewap.R.styleable.LrcView_highLineTextColor, Color.BLUE)
+            ta.getColor(com.example.topviewap.R.styleable.LrcView_highLineTextColor, Color.WHITE)
         //获得屏幕密度
         val fontScale = context.resources.displayMetrics.scaledDensity;
         val scale = context.resources.displayMetrics.density;

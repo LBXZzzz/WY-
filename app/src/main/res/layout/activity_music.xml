@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lly_music"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".view.MusicActivity">
 
@@ -12,24 +14,26 @@
         android:id="@+id/too_bar_service"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/white"
+        android:layout_marginTop="25dp"
+        android:background="#00333333"
         android:orientation="horizontal"
         android:textSize="20sp"
-        app:navigationIcon="@drawable/ic_resource_return">
-    </androidx.appcompat.widget.Toolbar>
+        app:contentInsetStart="0dp"
+        app:navigationIcon="@drawable/ic_resource_return"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:background="@color/white"
+        android:background="#00333333"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv1_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/big_red"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <TextView
@@ -37,6 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:textColor="@color/white"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -46,7 +51,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:background="@color/white"
+        android:background="#00333333"
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
@@ -55,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginVertical="10dp"
+            app:cardBackgroundColor="#00333333"
             app:cardCornerRadius="8dp"
             app:cardElevation="0dp">
 
@@ -64,10 +70,12 @@
                 android:layout_height="200dp"
                 android:layout_gravity="center_horizontal" />
         </androidx.cardview.widget.CardView>
+
         <com.example.topviewap.widget.LycView
             android:id="@+id/lyc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#00333333"
             app:lineSpacing="30dp"
             app:textSize="16sp" />
     </LinearLayout>
@@ -76,6 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="130dp"
         android:layout_margin="3dp"
+        android:background="#00333333"
         android:orientation="vertical">
 
         <SeekBar
@@ -96,7 +105,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="当前时间" />
+                android:text="当前时间"
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/tv_service_current_time"
@@ -105,7 +115,7 @@
                 android:layout_marginStart="5dp"
                 android:layout_toRightOf="@+id/tv_service"
                 android:text="00:00"
-                android:textColor="@color/big_red" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/tv_service_total_time"
@@ -114,14 +124,15 @@
                 android:layout_marginEnd="5dp"
                 android:layout_toLeftOf="@+id/tv2_service"
                 android:text="00:00"
-                android:textColor="@color/big_red" />
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/tv2_service"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="总时间" />
+                android:text="总时间"
+                android:textColor="@color/white" />
         </RelativeLayout>
 
         <LinearLayout
@@ -140,9 +151,9 @@
                     android:id="@+id/iv_play_mode_service"
                     android:layout_width="50dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/linearlayout_water_selector"
                     android:padding="10dp"
-                    android:src="@drawable/ic_list_play" />
+                    android:src="@drawable/ic_list_play"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -155,22 +166,23 @@
                     android:id="@+id/iv_pre_song_service"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/linearlayout_water_selector"
-                    android:src="@drawable/ic_previous__song" />
+                    android:src="@drawable/ic_previous__song"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="#00333333"
                 android:gravity="center">
 
                 <ImageView
                     android:id="@+id/iv_music_play_service"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/linearlayout_water_selector"
-                    android:src="@drawable/music_play" />
+                    android:src="@drawable/music_play"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -183,8 +195,8 @@
                     android:id="@+id/iv_next_song_service"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/linearlayout_water_selector"
-                    android:src="@drawable/ic_next_song" />
+                    android:src="@drawable/ic_next_song"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
             <LinearLayout
@@ -197,8 +209,8 @@
                     android:id="@+id/iv_play_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/linearlayout_water_selector"
-                    android:src="@drawable/ic_play_list" />
+                    android:src="@drawable/ic_play_list"
+                    android:textColor="@color/white" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

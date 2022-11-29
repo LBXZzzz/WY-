@@ -5,18 +5,23 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.*
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.*
 import android.util.Log
 import android.view.View
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import android.view.WindowManager
 import android.view.animation.LinearInterpolator
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.SeekBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.*
 import com.example.music.IMusic
 import com.example.music.MusicService
@@ -26,10 +31,12 @@ import com.example.topviewap.entries.LycData
 import com.example.topviewap.entries.Song
 import com.example.topviewap.entries.SongData
 import com.example.topviewap.examples.Repository
+import com.example.topviewap.utils.BlurTransformation
 import com.example.topviewap.utils.Util
 import com.example.topviewap.widget.LycView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+
 
 class MusicActivity : AppCompatActivity(), View.OnClickListener {
     private var TAG = "MusicActivity"
@@ -51,6 +58,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var lycView: LycView//歌词的view
     private lateinit var cvPhoto: CardView
 
+    private lateinit var llyMusic: LinearLayout
 
     private var rotationAnim: ObjectAnimator? = null//封面旋转的动画属性
 
@@ -106,6 +114,12 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
+        //通知栏沉浸式
+        window.statusBarColor = Color.TRANSPARENT
+        val lly = findViewById<LinearLayout>(R.id.lly_music)
+        lly.systemUiVisibility = (SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
         song = intent.getSerializableExtra("song") as Song
         attemptToBindService()
         viewModel.searchSongUrl(song.id.toString())
@@ -141,6 +155,16 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
+    private val target: com.squareup.picasso.Target = object : com.squareup.picasso.Target {
+        override fun onBitmapLoaded(bitmap: Bitmap?, loadedFrom: Picasso.LoadedFrom?) {
+            //替换背景
+            llyMusic.setBackgroundDrawable(BitmapDrawable(resources, bitmap))
+        }
+
+        override fun onBitmapFailed(drawable: Drawable?) {}
+        override fun onPrepareLoad(drawable: Drawable?) {}
+    }
+
     private fun init() {
         mToolbar = findViewById(R.id.too_bar_service)
         mIvSongPhoto = findViewById(R.id.iv_music_photo_service)
@@ -155,6 +179,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         mBtPreSong = findViewById(R.id.iv_pre_song_service)
         lycView = findViewById(R.id.lyc)
         cvPhoto = findViewById(R.id.music_card_view)
+        llyMusic = findViewById(R.id.lly_music)
         cvPhoto.setOnClickListener(this)
         lycView.setOnClickListener(this)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
@@ -199,11 +224,20 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         Picasso.with(this)
             .load(picUrl)
             .placeholder(R.drawable.loding)
+            .transform(BlurTransformation(this))//高斯模糊
+            .resize(150, 150)
+            .into(target)
+
+        Picasso.with(this)
+            .load(picUrl)
+            .placeholder(R.drawable.loding)
+            //.transform(BlurTransformation(this))高斯模糊
             .resize(150, 150)
             .into(mIvSongPhoto)
         mTvSongName.text = songName
         mTvSingerName.text = singerName
     }
+
 
     //用来初始化音乐播放界面的按钮功能
     private fun initFunction() {

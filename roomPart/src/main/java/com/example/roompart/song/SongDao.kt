@@ -15,7 +15,7 @@ interface SongDao {
     fun update(song: Song)
 
     @Query("select * from Song where id =:id")
-    fun queryById(id: Int): Song
+    fun queryById(id: Int): Song?
 
     @Query("select * from Song")
     fun queryAll(): List<Song>

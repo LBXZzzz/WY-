@@ -30,7 +30,10 @@ class SongRoom(val context: Context) {
     //插入数据
     fun insert(song: Song) {
         val songItem = get(context).songDao().queryById(song.id!!.toInt())
-        songItem?.let { delete(song) } ?: get(context).songDao().insert(song)
+        if (songItem != null) {
+            delete(song)
+        }
+        get(context).songDao().insert(song)
     }
 
     fun delete(song: Song) {

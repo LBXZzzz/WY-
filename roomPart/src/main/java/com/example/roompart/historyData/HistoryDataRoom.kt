@@ -27,6 +27,14 @@ class HistoryDataRoom(val context: Context) {
 
     //插入数据
     fun insert(historyData: HistoryData) {
+        val his = get(context).historyData().findBySongName(historyData.data!!.toString())
+        if (his != null) {
+            delete(his)
+        }
         get(context).historyData().insert(historyData)
+    }
+
+    fun delete(historyData: HistoryData) {
+        get(context).historyData().delete(historyData)
     }
 }

@@ -50,7 +50,7 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         init()
-        mToolbar.title=""
+        mToolbar.title = ""
         setSupportActionBar(mToolbar)
         supportActionBar?.let {
             it.setDisplayHomeAsUpEnabled(true)
@@ -139,8 +139,8 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         mRecyclerView.adapter = adapter
-        mProgressBar.visibility=View.GONE
-        mLlySong.visibility=View.VISIBLE
+        mProgressBar.visibility = View.GONE
+        mLlySong.visibility = View.VISIBLE
         //这个函数是触发Paging 3分页功能的核心，调用这个函数之后，Paging 3就开始工作了
         //collect()函数是一个挂起函数，只有在协程作用域中才能调用它
         lifecycleScope.launch {
@@ -162,7 +162,7 @@ class SearchActivity : AppCompatActivity() {
                 mWaterFlowLayout,
                 false
             ) as Button
-            textView.text = datas[i].data
+            textView.text = datas[datas.size - i - 1].data
             textView.setOnClickListener() {
                 val key = textView.text.toString()
                 mLlyHot.visibility = View.GONE
@@ -181,8 +181,8 @@ class SearchActivity : AppCompatActivity() {
             mLlyHot.visibility = View.GONE
             mScrollView.visibility = View.GONE
             mLlySong.visibility = View.GONE
-            mWaterFlowLayout.visibility=View.GONE
-            mProgressBar.visibility=View.VISIBLE
+            mWaterFlowLayout.visibility = View.GONE
+            mProgressBar.visibility = View.VISIBLE
             viewModel.search(key)
             val historyData = HistoryData()
             historyData.data = key

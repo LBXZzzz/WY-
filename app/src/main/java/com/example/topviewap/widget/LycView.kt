@@ -101,7 +101,7 @@ class LycView : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         getMeasuredWidthAndHeight();//得到测量后的宽高
-        if (MusicService.mMediaPlayer.duration != 0 && lycList != null) {
+        if (lycList != null) {
             getCurrentPosition()//得到当前歌词的位置
             drawLrc(canvas!!)//画歌词
             scrollLrc()//歌词滑动
@@ -126,7 +126,7 @@ class LycView : View {
     //得到当前歌词的位置
     private fun getCurrentPosition() {
         //注意这里是直接获取的mediaPlayer的时间
-        val curTime = MusicService.mMediaPlayer.currentPosition
+        val curTime = MusicService.getCurrentDuration()
         //如果当前的时间大于10分钟，证明歌曲未播放，则当前位置应该为0
         if (curTime < lycList!![0].startTime || curTime > 10 * 60 * 1000) {
             currentPosition = 0
@@ -234,8 +234,8 @@ class LycView : View {
      * 把解析过的歌词集合传给这个view
      */
     fun setLycList(lyc: ArrayList<Lyric>) {
-        if(this.lycList==null){
-            this.lycList=null
+        if (this.lycList == null) {
+            this.lycList = null
         }
         this.lycList = lyc
     }

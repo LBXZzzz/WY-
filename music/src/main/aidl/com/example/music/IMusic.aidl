@@ -25,4 +25,10 @@ interface IMusic {
 
         //判断音乐播放器是否准备好了
         boolean isHavePre();
+
+        //获取mediaplayer当前时间
+        int getCurrentDuration();
+
+        //获取mediaplayer总时间
+        int getTotalDuration();
 }

@@ -10,13 +10,16 @@ import android.os.IBinder
 import android.util.Log
 import com.example.music.songIdNetwork.Repository
 import com.example.roompart.song.SongRoom
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class MusicService : Service(), MediaPlayer.OnCompletionListener,
     MediaPlayer.OnErrorListener {
 
     private val TAG = "MusicService"
+    private val job = Job()
+    val scope = CoroutineScope(job)
 
     companion object {
         var isPlayPre = false//判断歌曲是否准备过
@@ -25,6 +28,19 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
         var PLAY_MODE = 1//当前的播放模式
         val mMediaPlayer = MediaPlayer()
         lateinit var songRoomList: List<com.example.roompart.song.Song>
+        fun getCurrentDuration(): Int {
+            if (isPlayPre) {
+                return mMediaPlayer.currentPosition
+            }
+            return 0
+        }
+
+        fun getTotalDuration(): Int {
+            if (isPlayPre) {
+                return mMediaPlayer.duration
+            }
+            return 999999999
+        }
     }
 
     override fun onCreate() {
@@ -34,6 +50,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
     }
 
     private val musicBinder = object : IMusic.Stub() {
+
         override fun startMusic(url: String?) {
             if (isNewSong) {
                 mMediaPlayer.reset()
@@ -54,7 +71,6 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
 
         }
 
-
         override fun stopMusic() {
             if (mMediaPlayer.isPlaying) {
                 mMediaPlayer.pause()
@@ -68,7 +84,11 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
             if (songNumber >= songRoomList.size) {
                 songNumber = 0
             }
-            GlobalScope.launch {
+            /* GlobalScope.launch {
+
+             }*/
+            scope.launch {
+                // 处理具体的逻辑
                 isNewSong = true
                 val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
                 startMusic(sb)
@@ -88,7 +108,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
             if (songNumber < 0) {
                 songNumber = songRoomList.size - 1
             }
-            GlobalScope.launch {
+            scope.launch {
                 isNewSong = true
                 val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
                 startMusic(sb)
@@ -108,6 +128,20 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
             return mMediaPlayer.isPlaying
         }
 
+        override fun getCurrentDuration(): Int {
+            if (isPlayPre) {
+                return mMediaPlayer.currentPosition
+            }
+            return 0
+        }
+
+        override fun getTotalDuration(): Int {
+            if (isPlayPre) {
+                return mMediaPlayer.duration
+            }
+            return 999999999
+        }
+
     }
 
     override fun onBind(intent: Intent?): IBinder {
@@ -124,14 +158,14 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                 if (songNumber >= songRoomList.size) {
                     songNumber = 0
                 }
-                GlobalScope.launch {
+                scope.launch {
                     isNewSong = true
                     val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
                     musicBinder.startMusic(sb)
                 }
             }
             2 -> {
-                GlobalScope.launch {
+                scope.launch {
                     isNewSong = true
                     val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
                     musicBinder.startMusic(sb)

@@ -85,12 +85,12 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
                     val message = Message()
                     handler.sendMessage(message)
                     //该判断条件说明MediaPlayer应该准备好了
-                    if (MusicService.mMediaPlayer.duration != 0) {
-                        mSeekBar.max = MusicService.mMediaPlayer.duration
+                    if (MusicService.isPlayPre) {
+                        mSeekBar.max = musicManager.totalDuration
                     }
                     //如果没在拖动进度条才实时更新歌曲进度
                     if (!isDrag) {
-                        mSeekBar.progress = (MusicService.mMediaPlayer.currentPosition)
+                        mSeekBar.progress = musicManager.currentDuration
                     }
                     try {
                         // 每70毫秒更新一次位置

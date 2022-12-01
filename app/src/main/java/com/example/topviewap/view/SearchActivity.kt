@@ -42,6 +42,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var mLlyHot: LinearLayout //热搜榜单的LinearLayout
     private lateinit var mEd: AppCompatEditText
     private lateinit var mScrollView: ScrollView
+    private lateinit var mTextView: TextView
 
     //懒加载技术来获取HotSearchViewModel的实例
     private val viewModel by lazy { ViewModelProvider(this).get(HotSearchViewModel::class.java) }
@@ -87,6 +88,7 @@ class SearchActivity : AppCompatActivity() {
         mLlyHot = findViewById(R.id.lly_hot)
         mEd = findViewById(R.id.search_et)
         mScrollView = findViewById(R.id.scrollView)
+        mTextView = findViewById(R.id.history)
     }
 
     /**
@@ -156,24 +158,29 @@ class SearchActivity : AppCompatActivity() {
     private fun initWaterFlowLayout() {
         val historyDataRoom = HistoryDataRoom(this)
         val datas = historyDataRoom.queryAll()
-        val layoutInflater = LayoutInflater.from(this)
-        for (i in datas.indices) {
-            val textView = layoutInflater.inflate(
-                R.layout.waterflow_layout_view,
-                mWaterFlowLayout,
-                false
-            ) as Button
-            textView.text = datas[datas.size - i - 1].data
-            textView.setOnClickListener() {
-                val key = textView.text.toString()
-                mLlyHot.visibility = View.GONE
-                mScrollView.visibility = View.GONE
-                mLlySong.visibility = View.VISIBLE
-                viewModel.search(key)
-                initRecyclerView(key)
+        if (datas == null) {
+            mTextView.visibility = View.GONE
+        } else {
+            val layoutInflater = LayoutInflater.from(this)
+            for (i in datas.indices) {
+                val textView = layoutInflater.inflate(
+                    R.layout.waterflow_layout_view,
+                    mWaterFlowLayout,
+                    false
+                ) as Button
+                textView.text = datas[datas.size - i - 1].data
+                textView.setOnClickListener() {
+                    val key = textView.text.toString()
+                    mLlyHot.visibility = View.GONE
+                    mScrollView.visibility = View.GONE
+                    mLlySong.visibility = View.VISIBLE
+                    viewModel.search(key)
+                    initRecyclerView(key)
+                }
+                mWaterFlowLayout.addView(textView)
             }
-            mWaterFlowLayout.addView(textView)
         }
+
     }
 
     private fun initEditText() {

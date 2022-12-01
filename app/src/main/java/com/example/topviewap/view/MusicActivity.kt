@@ -228,8 +228,9 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         Picasso.with(this)
             .load(picUrl)
             .placeholder(R.drawable.loding)
+            .centerCrop()
             .transform(BlurTransformation(this))//高斯模糊
-            .resize(200, 100)
+            .resize(250, 250)
             .into(target)
 
         Picasso.with(this)

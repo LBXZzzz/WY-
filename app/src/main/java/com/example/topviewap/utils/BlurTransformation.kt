@@ -40,7 +40,7 @@ class BlurTransformation(context: Context?) : Transformation {
         script.setInput(input)
 
         // 设置模糊半径
-        script.setRadius(10f)
+        script.setRadius(16f)
 
         //开始操作
         script.forEach(output)

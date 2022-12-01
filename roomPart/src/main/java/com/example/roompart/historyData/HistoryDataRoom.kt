@@ -21,7 +21,7 @@ class HistoryDataRoom(val context: Context) {
 
 
     //查询数据库里面所有的歌曲集合
-    fun queryAll(): List<HistoryData> {
+    fun queryAll(): List<HistoryData> ?{
         return get(context).historyData().queryAll()
     }
 

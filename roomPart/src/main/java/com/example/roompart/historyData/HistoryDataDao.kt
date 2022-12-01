@@ -6,7 +6,7 @@ import com.example.roompart.song.Song
 @Dao
 interface HistoryDataDao {
     @Query("select * from HistoryData")
-    fun queryAll(): List<HistoryData>
+    fun queryAll(): List<HistoryData>?
 
     @Insert
     fun insert(historyData: HistoryData)

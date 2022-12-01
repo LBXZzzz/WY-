@@ -106,6 +106,7 @@ class SearchActivity : AppCompatActivity() {
             bt.setBackgroundColor(resources.getColor(R.color.white))
             mLlyHot.addView(bt)
             bt.setOnClickListener(View.OnClickListener {
+                SongDataPagingSource.songList.clear()
                 val key = bt.text.toString()
                 mLlyHot.visibility = View.GONE
                 mScrollView.visibility = View.GONE
@@ -177,6 +178,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initEditText() {
         mEd.setOnEditorActionListener { v, actionId, event ->
+            SongDataPagingSource.songList.clear()
             val key = mEd.text.toString()
             mLlyHot.visibility = View.GONE
             mScrollView.visibility = View.GONE

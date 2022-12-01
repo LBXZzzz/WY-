@@ -158,8 +158,9 @@ class SearchActivity : AppCompatActivity() {
     private fun initWaterFlowLayout() {
         val historyDataRoom = HistoryDataRoom(this)
         val datas = historyDataRoom.queryAll()
-        if (datas == null) {
+        if (datas!!.isEmpty()) {
             mTextView.visibility = View.GONE
+            mWaterFlowLayout.visibility = View.GONE
         } else {
             val layoutInflater = LayoutInflater.from(this)
             for (i in datas.indices) {

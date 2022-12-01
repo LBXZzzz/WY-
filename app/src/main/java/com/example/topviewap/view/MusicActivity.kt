@@ -214,13 +214,17 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
             picUrl = songRoomList[MusicService.songNumber].picUrl.toString()
             songName = songRoomList[MusicService.songNumber].songName.toString()
             singerName = songRoomList[MusicService.songNumber].singerName.toString()
+            viewModel.searchLyc(songRoomList[MusicService.songNumber].id.toString())
         } else {
             picUrl = song.al.picUrl
             songName = song.name
+            viewModel.searchLyc(song.id.toString())
             for (i in 0 until song.ar.size) {
                 singerName = song.ar[i].name + " "
             }
         }
+
+        //设置view的背景，高斯模糊
         Picasso.with(this)
             .load(picUrl)
             .placeholder(R.drawable.loding)

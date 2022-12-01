@@ -234,6 +234,9 @@ class LycView : View {
      * 把解析过的歌词集合传给这个view
      */
     fun setLycList(lyc: ArrayList<Lyric>) {
+        if(this.lycList==null){
+            this.lycList=null
+        }
         this.lycList = lyc
     }
 

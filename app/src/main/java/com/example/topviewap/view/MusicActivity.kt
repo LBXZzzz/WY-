@@ -66,9 +66,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
     private var isPlay = false//用来判断歌曲是否在播放
     private var isDrag = false//用来判断进度条是否在拖动
     private var isRoom = false//用来判断是否从数据库内加载音乐界面
-
-
-    private var PLAY_MODE = 1//用来判断播放模式，1为顺序播放,2为单曲循环，3为随机播放
+    private var PLAY_MODE =0//用来判断播放模式，1为顺序播放,2为单曲循环，3为随机播放
 
 
     companion object {
@@ -124,6 +122,13 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         attemptToBindService()
         viewModel.searchSongUrl(song.id.toString())
         viewModel.searchLyc(song.id.toString())
+        PLAY_MODE = try {
+            getSongNumber()
+        }catch (e:java.lang.Exception){
+            saveSongNumber(1)
+            getSongNumber()
+        }
+        Log.e("zwyqq",PLAY_MODE.toString())
         init()
         initLayout()
         initFunction()
@@ -241,6 +246,17 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
             .into(mIvSongPhoto)
         mTvSongName.text = songName
         mTvSingerName.text = singerName
+        when (PLAY_MODE) {
+            1 -> {
+                mIvPlayMode.setImageResource(R.drawable.ic_list_play)
+            }
+            2 -> {
+                mIvPlayMode.setImageResource(R.drawable.ic_loop_playback)
+            }
+            3 -> {
+                mIvPlayMode.setImageResource(R.drawable.ic_random_play)
+            }
+        }
     }
 
 
@@ -268,21 +284,23 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
                     PLAY_MODE = 2
                     mIvPlayMode.setImageResource(R.drawable.ic_loop_playback)
                     Toast.makeText(applicationContext, "单曲循环", Toast.LENGTH_SHORT).show()
+                    saveSongNumber(PLAY_MODE)
                 }
                 2 -> {
                     MusicService.PLAY_MODE = 3
                     PLAY_MODE = 3
                     mIvPlayMode.setImageResource(R.drawable.ic_random_play)
                     Toast.makeText(applicationContext, "随机播放", Toast.LENGTH_SHORT).show()
+                    saveSongNumber(PLAY_MODE)
                 }
                 3 -> {
                     PLAY_MODE = 1
                     MusicService.PLAY_MODE = 1
                     mIvPlayMode.setImageResource(R.drawable.ic_list_play)
                     Toast.makeText(applicationContext, "列表播放", Toast.LENGTH_SHORT).show()
+                    saveSongNumber(PLAY_MODE)
                 }
             }
-
         })
         mBtNextSong.setOnClickListener { v: View? ->
             musicManager.nextSong()
@@ -360,6 +378,17 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
     private fun attemptToBindService() {
         val intent = Intent(this, MusicService::class.java)
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun getSongNumber(): Int {
+        val prefs = getSharedPreferences("playMode", Context.MODE_PRIVATE)
+        return prefs.getInt("playMode", 1)
+    }
+
+    private fun saveSongNumber(number: Int) {
+        val editor = getSharedPreferences("playMode", Context.MODE_PRIVATE).edit()
+        editor.putInt("playMode", number)
+        editor.apply()//注意不要遗漏这一个，不然没保存
     }
 
     override fun onStop() {

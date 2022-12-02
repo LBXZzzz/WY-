@@ -13,6 +13,7 @@ import com.example.roompart.song.SongRoom
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.util.*
 
 class MusicService : Service(), MediaPlayer.OnCompletionListener,
     MediaPlayer.OnErrorListener {
@@ -84,9 +85,6 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
             if (songNumber >= songRoomList.size) {
                 songNumber = 0
             }
-            /* GlobalScope.launch {
-
-             }*/
             scope.launch {
                 // 处理具体的逻辑
                 isNewSong = true
@@ -148,6 +146,10 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
         return musicBinder
     }
 
+    var isRandom = true//用来判断随机播放的集合是否要重新排列
+    var randomNumber = 0
+    val randomPlayList = ArrayList<Int>()
+
     @SuppressLint("CommitPrefEdits")
     override fun onCompletion(mp: MediaPlayer?) {
         songNumber = getSongNumber()
@@ -171,6 +173,38 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                     musicBinder.startMusic(sb)
                 }
             }
+            3 -> {
+                if (isRandom) {
+                    randomNumber=0
+                    for (i in songRoomList.indices) {
+                        randomPlayList.add(i)
+                    }
+                    var x: Int
+                    var y: Int
+                    val random = Random()
+                    for (i in 0..20) {
+                        x = random.nextInt(songRoomList.size)
+                        y = random.nextInt(songRoomList.size)
+                        Collections.swap(randomPlayList, x, y)
+                    }
+                    Log.e("zwytto", randomPlayList.toString())
+                    songNumber = randomPlayList[randomNumber]
+                    randomNumber++
+                    isRandom=false
+                }else{
+                    if(randomNumber== songRoomList.size){
+                        isRandom=true
+                    }
+                    songNumber = randomPlayList[randomNumber]
+                    randomNumber++
+                }
+                scope.launch {
+                    isNewSong = true
+                    val sb = Repository.songUrlData(songRoomList[songNumber].id.toString())
+                    musicBinder.startMusic(sb)
+                }
+            }
+
         }
         //把当前播放第几首歌存起来
         saveSongNumber(songNumber)

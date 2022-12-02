@@ -56,7 +56,7 @@ class MusicListRecyclerViewAdapter(private val context: Context, songItemArrayLi
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val song = songItemArrayList[position]
+        val song = songItemArrayList[songItemArrayList.size - position - 1]
         if (song != null) {
             holder.songName.text = song.songName
             holder.singerName.text = song.singerName

@@ -118,18 +118,48 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         val lly = findViewById<LinearLayout>(R.id.lly_music)
         lly.systemUiVisibility = (SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-
-        song = intent.getSerializableExtra("song") as Song
+        init()
+        try {
+            song = intent.getSerializableExtra("song") as Song
+        } catch (e: Exception) {
+            Log.e(TAG, "点击播放列表启动界面")
+            isRoom = true
+        }
         attemptToBindService()
-        viewModel.searchSongUrl(song.id.toString())
-        viewModel.searchLyc(song.id.toString())
+        if (isRoom) {
+            viewModel.searchSongUrl(songRoomList[MusicService.songNumber].id.toString())
+            viewModel.searchLyc(songRoomList[MusicService.songNumber].id.toString())
+        } else {
+            viewModel.searchSongUrl(song.id.toString())
+            viewModel.searchLyc(song.id.toString())
+            val songRoom = com.example.roompart.song.Song()
+            songRoom.id = song.id
+            songRoom.songName = song.name
+            songRoom.singerName = song.ar[0].name
+            songRoom.picUrl = song.al.picUrl
+            val songRoomData = SongRoom(this)
+            //把歌曲id存入入数据库
+            songRoomData.insert(songRoom)
+            if (MusicService.isPlayPre) {
+                MusicService.isNewSong = true
+            }
+            songRoomList = songRoomData.queryAll()
+            for (i in 0 until songRoomList.size) {
+                Log.d("zwyuu", songRoomList[i].id.toString())
+                Log.d("zwyuu", songRoomList[i].picUrl.toString())
+                Log.d("zwyuu", songRoomList[i].songName.toString())
+                Log.d("zwyuu", songRoomList[i].singerName.toString())
+            }
+            val editor = getSharedPreferences("songNumberData", Context.MODE_PRIVATE).edit()
+            editor.putInt("songNumber", songRoomList.size - 1)
+            editor.apply()
+        }
         PLAY_MODE = try {
             getSongNumber()
         } catch (e: java.lang.Exception) {
             saveSongNumber(1)
             getSongNumber()
         }
-        init()
         initLayout()
         initFunction()
         initAnim()
@@ -137,7 +167,6 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         intentFilter.addAction("UPDATE")
         val musicBroadReceiver = MusicBroadReceiver()
         registerReceiver(musicBroadReceiver, intentFilter)
-        MusicService.songNumber++
         viewModel.searchSongLiveData.observe(this, Observer { result ->
             val data = result.getOrNull()
             if (data != null) {
@@ -189,27 +218,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         cvPhoto.setOnClickListener(this)
         lycView.setOnClickListener(this)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
-        val songRoom = com.example.roompart.song.Song()
-        songRoom.id = song.id
-        songRoom.songName = song.name
-        songRoom.singerName = song.ar[0].name
-        songRoom.picUrl = song.al.picUrl
-        val songRoomData = SongRoom(this)
-        //把歌曲id存入入数据库
-        songRoomData.insert(songRoom)
-        if (MusicService.isPlayPre) {
-            MusicService.isNewSong = true
-        }
-        songRoomList = songRoomData.queryAll()
-        for (i in 0 until songRoomList.size) {
-            Log.d("zwyuu", songRoomList[i].id.toString())
-            Log.d("zwyuu", songRoomList[i].picUrl.toString())
-            Log.d("zwyuu", songRoomList[i].songName.toString())
-            Log.d("zwyuu", songRoomList[i].singerName.toString())
-        }
-        val editor = getSharedPreferences("songNumberData", Context.MODE_PRIVATE).edit()
-        editor.putInt("songNumber", songRoomList.size - 1)
-        editor.apply()
+
     }
 
     private fun initLayout() {

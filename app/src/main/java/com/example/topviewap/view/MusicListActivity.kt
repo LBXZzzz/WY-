@@ -1,5 +1,7 @@
 package com.example.topviewap.view
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -10,7 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.music.MusicService
 import com.example.roompart.song.SongRoom
 import com.example.topviewap.R
+import com.example.topviewap.adapter.HotDataRecyclerView
 import com.example.topviewap.adapter.MusicListRecyclerViewAdapter
+import com.example.topviewap.utils.SongDataPagingSource
 
 class MusicListActivity : AppCompatActivity() {
     private lateinit var lly: LinearLayout
@@ -28,6 +32,17 @@ class MusicListActivity : AppCompatActivity() {
         songRoomList = songRoomData.queryAll()
         val adapter = MusicListRecyclerViewAdapter(this, songRoomList)
         rv.adapter = adapter
+        adapter.mOnItemClickListener = object : MusicListRecyclerViewAdapter.OnItemClickListener {
+            override fun onItemClick(view: View?, position: Int) {
+                MusicActivity.isRoom = true
+                MusicService.songNumber = position
+                val editor = getSharedPreferences("songNumberData", Context.MODE_PRIVATE).edit()
+                editor.putInt("songNumber", position)
+                editor.apply()//注意不要遗漏这一个，不然没保存
+                val intent = Intent(this@MusicListActivity, MusicActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun init() {

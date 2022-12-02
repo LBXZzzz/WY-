@@ -228,7 +228,7 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
         return prefs.getInt("songNumber", 0)
     }
 
-    private fun saveSongNumber(number: Int) {
+    fun saveSongNumber(number: Int) {
         val editor = getSharedPreferences("songNumberData", Context.MODE_PRIVATE).edit()
         editor.putInt("songNumber", number)
         editor.apply()//注意不要遗漏这一个，不然没保存

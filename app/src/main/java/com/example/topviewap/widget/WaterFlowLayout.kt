@@ -66,7 +66,7 @@ class WaterFlowLayout @JvmOverloads constructor(
         }
         setMeasuredDimension(
             if (widthMode == MeasureSpec.AT_MOST) width + paddingLeft + paddingRight else widthSize,
-            if (heightMode == MeasureSpec.AT_MOST) height + paddingTop + paddingBottom else heightSize
+            if (heightMode == MeasureSpec.AT_MOST) height + paddingTop + paddingBottom else height+100
         )
     }
 

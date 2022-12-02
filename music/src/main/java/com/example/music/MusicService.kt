@@ -187,7 +187,6 @@ class MusicService : Service(), MediaPlayer.OnCompletionListener,
                         y = random.nextInt(songRoomList.size)
                         Collections.swap(randomPlayList, x, y)
                     }
-                    Log.e("zwytto", randomPlayList.toString())
                     songNumber = randomPlayList[randomNumber]
                     randomNumber++
                     isRandom=false

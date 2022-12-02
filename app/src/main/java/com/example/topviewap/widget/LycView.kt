@@ -41,6 +41,9 @@ class LycView : View {
     //手势监听
     private var mGestureDetector: GestureDetector? = null
 
+    private var isDown=true//判断手指是否按下
+
+    private var my:Float=0f
 
     constructor(context: Context?) : super(context) {
         init(context)
@@ -166,7 +169,7 @@ class LycView : View {
         val currentTime: Long = MusicService.mMediaPlayer.currentPosition.toLong()
 
         //判断是否换行,在0.5s内完成滑动，即实现弹性滑动
-        val y =
+        my =
             if (currentTime - startTime > 500) (currentPosition * lineSpacing).toFloat() else lastPosition * lineSpacing + (currentPosition - lastPosition) * lineSpacing * ((currentTime - startTime) / 500f)
         scrollTo(0, y.toInt())
         if (scrollY == currentPosition * lineSpacing) {
@@ -174,12 +177,18 @@ class LycView : View {
         }
     }
 
+    /*override fun onTouchEvent(event: MotionEvent?): Boolean {
+        mGestureDetector!!.onTouchEvent(event)
+        // 双指缩放操作优先处理事件
+        return true
+    }*/
+
     //手势监听器
-    class GestureListener : SimpleOnGestureListener() {
+    inner class GestureListener : SimpleOnGestureListener() {
 
         //按下：手指刚刚接触到触摸屏的那一刹那，就是触的那一下
         override fun onDown(e: MotionEvent?): Boolean {
-            Log.e("zwyuu", "sdjjdksk")
+            isDown=true
             return true
         }
 
@@ -196,7 +205,8 @@ class LycView : View {
             distanceX: Float,
             distanceY: Float
         ): Boolean {
-            Log.e("zwyuu", "1111111111sdjjdsfsfdksk")
+            my+=distanceY
+            scrollTo(0, y.toInt())
             return super.onScroll(e1, e2, distanceX, distanceY)
         }
 
@@ -209,6 +219,7 @@ class LycView : View {
         ): Boolean {
             Log.e("zwyuu", "sdjj____(((((((((((((sk")
             return super.onFling(e1, e2, velocityX, velocityY)
+
         }
 
         //用来判定该次点击是SingleTap而不是DoubleTap
@@ -216,6 +227,7 @@ class LycView : View {
             Log.e("zwyuu", "sd8888888888888888")
             return super.onSingleTapConfirmed(e)
         }
+
     }
 
 

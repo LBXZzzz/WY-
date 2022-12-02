@@ -2,12 +2,12 @@ package com.example.topviewap.view
 
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -34,6 +34,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //设置状态栏的背景颜色和字体颜色
+        window.statusBarColor = Color.rgb(255, 255, 255)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR //实现状态栏图标和文字颜色为暗色
         init()
         setSupportActionBar(mToolbar)
         mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)

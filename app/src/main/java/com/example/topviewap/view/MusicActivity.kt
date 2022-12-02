@@ -57,6 +57,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var mBtPreSong: ImageView
     private lateinit var lycView: LycView//歌词的view
     private lateinit var cvPhoto: CardView
+    private lateinit var mIvPlayList: ImageView
 
     private lateinit var llyMusic: LinearLayout
 
@@ -66,7 +67,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
     private var isPlay = false//用来判断歌曲是否在播放
     private var isDrag = false//用来判断进度条是否在拖动
     private var isRoom = false//用来判断是否从数据库内加载音乐界面
-    private var PLAY_MODE =0//用来判断播放模式，1为顺序播放,2为单曲循环，3为随机播放
+    private var PLAY_MODE = 0//用来判断播放模式，1为顺序播放,2为单曲循环，3为随机播放
 
 
     companion object {
@@ -124,11 +125,10 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         viewModel.searchLyc(song.id.toString())
         PLAY_MODE = try {
             getSongNumber()
-        }catch (e:java.lang.Exception){
+        } catch (e: java.lang.Exception) {
             saveSongNumber(1)
             getSongNumber()
         }
-        Log.e("zwyqq",PLAY_MODE.toString())
         init()
         initLayout()
         initFunction()
@@ -185,6 +185,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         lycView = findViewById(R.id.lyc)
         cvPhoto = findViewById(R.id.music_card_view)
         llyMusic = findViewById(R.id.lly_music)
+        mIvPlayList = findViewById(R.id.iv_play_list)
         cvPhoto.setOnClickListener(this)
         lycView.setOnClickListener(this)
         mToolbar.setNavigationOnClickListener { view: View? -> finish() }
@@ -315,6 +316,10 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
             initLayout()
             initFunction()
             isRoom = false
+        }
+        mIvPlayList.setOnClickListener {
+            val intent = Intent(this, MusicListActivity::class.java)
+            startActivity(intent)
         }
         mSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             var progressNow = 0
